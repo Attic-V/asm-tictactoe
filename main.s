@@ -115,3 +115,62 @@ print_e:
 	mov     rsp, rbp
 	pop     rbp
 	ret
+
+check_win:                                      ; (board)
+	push    rbp
+	mov     rbp, rsp
+
+	mov     r11w, [rbp + 16]
+
+	xor     rax, rax
+
+	mov     r10w, 0x1c0                     ; 111 000 000
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x38                      ; 000 111 000
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x7                       ; 000 000 111
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x124                     ; 100 100 100
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x92                      ; 010 010 010
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x49                      ; 001 001 001
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x111                     ; 100 010 001
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	mov     r10w, 0x54                      ; 001 010 100
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+	
+	jmp     .end
+
+.match:
+	mov     rax, 1
+
+.end:
+	mov     rsp, rbp
+	pop     rbp
+	ret
