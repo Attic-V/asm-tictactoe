@@ -3,23 +3,19 @@ OBJ = main.o
 OUT = out
 
 DIR_BUILD = build
-DIR_BIN = bin
 
-all: $(DIR_BIN)/$(OUT)
+all: $(OUT)
+build: $(OUT)
 
-$(DIR_BUILD)/$(OBJ): $(SRC) $(DIR_BUILD)
+$(DIR_BUILD)/$(OBJ): $(SRC)
+	@mkdir -p build
 	nasm -f elf64 -o $(DIR_BUILD)/$(OBJ) $(SRC)
 
-$(DIR_BIN)/$(OUT): $(DIR_BUILD)/$(OBJ) $(DIR_BIN)
-	ld -o $(DIR_BIN)/$(OUT) $(DIR_BUILD)/$(OBJ)
-
-$(DIR_BUILD):
-	mkdir $(DIR_BUILD)
-
-$(DIR_BIN):
-	mkdir $(DIR_BIN)
+$(OUT): $(DIR_BUILD)/$(OBJ)
+	ld -o $(OUT) $(DIR_BUILD)/$(OBJ)
 
 clean:
-	rm -rdf $(DIR_BUILD) $(DIR_BIN)
+	rm -rdf $(DIR_BUILD)
+	rm -f $(OUT)
 
 .PHONY: all clean
