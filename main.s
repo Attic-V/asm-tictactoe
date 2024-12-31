@@ -6,6 +6,14 @@
 	syscall
 %endmacro
 
+%macro printst 2
+	mov     rax, 1
+	mov     rdi, 1
+	mov     rsi, %1
+	mov     rdx, %2
+	syscall
+%endmacro
+
 %macro chstate 1
 	mov     r10w, %1
 	mov     cx, r10w
@@ -13,6 +21,9 @@
 	cmp     r10w, cx
 	je      .match
 %endmacro
+
+section .bss
+	input_char resb 1
 
 section .data
 	x_board dw 0
@@ -23,6 +34,9 @@ section .data
 	e_char db '.'                           ; empty position
 
 	newline db 0xa
+
+	position_prompt db "enter position [1-9]: ", 0
+	position_prompt_len equ $ - position_prompt
 
 section .text
 	global _start
@@ -42,11 +56,44 @@ main:
 	pop     rbp
 	ret
 
+place_piece:                                    ; (lea r14: board)
+	push    rbp
+	mov     rbp, rsp
+
+.loop:
+	push    r14
+	printst position_prompt, position_prompt_len
+	call    readchar
+	printch newline
+	pop     r14
+
+	mov     cl, [input_char]
+	cmp     cl, '1'
+	jl      .loop
+	cmp     cl, '9'
+	jg      .loop
+	sub     cl, '0'
+	dec     cl
+
+	mov     r12w, 0x100
+	shr     r12w, cl
+
+	mov     ax, [x_board]
+	or      ax, [o_board]
+	test    ax, r12w
+	jnz     .loop
+
+	or      [r14], r12w
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
 print_board:
 	push    rbp
 	mov     rbp, rsp
 
-	mov     cl, 9                           ; counter
+	mov     rcx, 9                          ; counter
 	mov     r8w, [x_board]
 	mov     r9w, [o_board]
 
@@ -146,6 +193,26 @@ check_win:                                      ; (board)
 	mov     rax, 1
 
 .end:
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
+readchar:
+	push    rbp
+	mov     rbp, rsp
+
+	mov     rax, 0
+	mov     rdi, 0
+	mov     rsi, input_char
+	mov     rdx, 1
+	syscall
+
+	mov     rax, 0
+	mov     rdi, 0
+	mov     rsi, 0
+	mov     rdx, 1
+	syscall                                 ; clear return char
+
 	mov     rsp, rbp
 	pop     rbp
 	ret
