@@ -243,14 +243,14 @@ check_win:              ; (board)
 
 	xor     rax, rax
 
-	chstate 0x1c0                           ; 111 000 000
-	chstate 0x38                            ; 000 111 000
-	chstate 0x7                             ; 000 000 111
-	chstate 0x124                           ; 100 100 100
-	chstate 0x92                            ; 010 010 010
-	chstate 0x49                            ; 001 001 001
-	chstate 0x111                           ; 100 010 001
-	chstate 0x54                            ; 001 010 100
+	chstate 0b111000000
+	chstate 0b000111000
+	chstate 0b000000111
+	chstate 0b100100100
+	chstate 0b010010010
+	chstate 0b001001001
+	chstate 0b100010001
+	chstate 0b001010100
 	jmp     .end
 
 .match:
