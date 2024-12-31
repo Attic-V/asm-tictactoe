@@ -83,7 +83,7 @@ main:
 	lea     r14, [o_board]
 	call    place_piece
 	call    print_board
-	printch newline
+	call    print_newline
 	push    word [o_board]
 	call    check_win
 	pop     rcx
@@ -118,7 +118,7 @@ place_piece:                                    ; (lea r14: board)
 	push    r14
 	printst position_prompt, position_prompt_len
 	call    readchar
-	printch newline
+	call    print_newline
 	pop     r14
 
 	mov     cl, [input_char]
@@ -180,7 +180,7 @@ print_board:
 	test    rdx, rdx
 	jnz     .to_loop                        ; check if remainder is not zero
 	push    rcx
-	printch newline
+	call    print_newline
 	pop     rcx
 	pop     r9
 	pop     r8
