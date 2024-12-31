@@ -43,6 +43,8 @@ print_board:
 	mov     r9w, [o_board]
 
 .loop:
+	push    r8
+	push    r9
 	push    rcx
 	test    r8w, 0x100
 	jnz     .print_x
@@ -71,6 +73,8 @@ print_board:
 	push    rcx
 	printch newline
 	pop     rcx
+	pop     r9
+	pop     r8
 
 .to_loop:
 	shl     r8w, 1
