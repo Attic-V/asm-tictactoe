@@ -1,3 +1,3 @@
 # asm-tictactoe
 
-written in x86_86 NASM assembly for linux
+written in x86_64 NASM assembly for linux
