@@ -38,6 +38,15 @@ section .data
 	position_prompt db "enter position [1-9]: ", 0
 	position_prompt_len equ $ - position_prompt
 
+	winmsg_x db "X wins!", 0xa
+	winmsg_x_len equ $ - winmsg_x
+
+	winmsg_o db "O wins!", 0xa
+	winmsg_o_len equ $ - winmsg_o
+
+	drawmsg db "The game has ended in a draw.", 0xa
+	drawmsg_len equ $ - drawmsg
+
 section .text
 	global _start
 
@@ -52,6 +61,51 @@ main:
 	push    rbp
 	mov     rbp, rsp
 
+	mov     cl, 9
+
+.x:
+	push    rcx
+	lea     r14, [x_board]
+	call    place_piece
+	call    print_board
+	call    print_newline
+	push    word [x_board]
+	call    check_win
+	pop     rcx
+	cmp     rax, 1
+	je      .win_x
+
+	loop    .o
+	jmp     .draw
+
+.o:
+	push    rcx
+	lea     r14, [o_board]
+	call    place_piece
+	call    print_board
+	printch newline
+	push    word [o_board]
+	call    check_win
+	pop     rcx
+	cmp     rax, 1
+	je      .win_o
+
+	loop    .x
+	jmp     .draw
+
+.win_x:
+	printst winmsg_x, winmsg_x_len
+	jmp     .end
+
+.win_o:
+	printst winmsg_o, winmsg_o_len
+	jmp     .end
+
+.draw:
+	printst drawmsg, drawmsg_len
+	jmp     .end
+
+.end:
 	mov     rsp, rbp
 	pop     rbp
 	ret
@@ -171,6 +225,16 @@ print_e:
 	pop     rbp
 	ret
 
+print_newline:
+	push    rbp
+	mov     rbp, rsp
+
+	printch newline
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
 check_win:                                      ; (board)
 	push    rbp
 	mov     rbp, rsp
@@ -195,7 +259,7 @@ check_win:                                      ; (board)
 .end:
 	mov     rsp, rbp
 	pop     rbp
-	ret
+	ret     2
 
 readchar:
 	push    rbp
