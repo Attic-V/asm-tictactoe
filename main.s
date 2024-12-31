@@ -1,3 +1,7 @@
+section .data
+	x_board dw 0
+	o_board dw 0
+
 section .text
 	global _start
 
