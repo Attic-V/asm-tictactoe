@@ -300,7 +300,7 @@ readchar:
 	mov     rdi, 0
 	mov     rsi, 0
 	mov     rdx, 1
-	syscall                                 ; clear return char
+	syscall                                 ; consume LF
 
 	mov     rsp, rbp
 	pop     rbp
