@@ -6,6 +6,14 @@
 	syscall
 %endmacro
 
+%macro chstate 1
+	mov     r10w, %1
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+%endmacro
+
 section .data
 	x_board dw 0
 	o_board dw 0
@@ -124,47 +132,14 @@ check_win:                                      ; (board)
 
 	xor     rax, rax
 
-	mov     r10w, 0x1c0                     ; 111 000 000
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x38                      ; 000 111 000
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x7                       ; 000 000 111
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x124                     ; 100 100 100
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x92                      ; 010 010 010
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x49                      ; 001 001 001
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x111                     ; 100 010 001
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	mov     r10w, 0x54                      ; 001 010 100
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-	
+	chstate 0x1c0                           ; 111 000 000
+	chstate 0x38                            ; 000 111 000
+	chstate 0x7                             ; 000 000 111
+	chstate 0x124                           ; 100 100 100
+	chstate 0x92                            ; 010 010 010
+	chstate 0x49                            ; 001 001 001
+	chstate 0x111                           ; 100 010 001
+	chstate 0x54                            ; 001 010 100
 	jmp     .end
 
 .match:
