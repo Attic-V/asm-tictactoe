@@ -110,7 +110,7 @@ main:
 	pop     rbp
 	ret
 
-place_piece:                                    ; (lea r14: board)
+place_piece:            ; (lea r14: board)
 	push    rbp
 	mov     rbp, rsp
 
@@ -235,7 +235,7 @@ print_newline:
 	pop     rbp
 	ret
 
-check_win:                                      ; (board)
+check_win:              ; (board)
 	push    rbp
 	mov     rbp, rsp
 
