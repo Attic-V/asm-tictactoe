@@ -34,6 +34,7 @@ section .data
 	e_char db '.'                           ; empty position
 
 	newline db 0xa
+	space   db 0x20
 
 	color_yel db `\e[0;33m`, 0
 	color_yel_len equ $ - color_yel
@@ -180,6 +181,7 @@ print_board:
 	jmp     .next
 
 .next:
+	call    print_space
 	pop     rcx
 	xor     rdx, rdx
 	mov     rax, rcx
@@ -243,6 +245,16 @@ print_newline:
 	mov     rbp, rsp
 
 	printch newline
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
+print_space:
+	push    rbp
+	mov     rbp, rsp
+
+	printch space
 
 	mov     rsp, rbp
 	pop     rbp
