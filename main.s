@@ -35,6 +35,15 @@ section .data
 
 	newline db 0xa
 
+	color_yel db `\e[0;33m`, 0
+	color_yel_len equ $ - color_yel
+
+	color_mag db `\e[0;35m`, 0
+	color_mag_len equ $ - color_mag
+
+	color_reset db `\e[0m`, 0
+	color_reset_len equ $ - color_reset
+
 	position_prompt db "enter position [1-9]: ", 0
 	position_prompt_len equ $ - position_prompt
 
@@ -198,8 +207,10 @@ print_board:
 print_x:
 	push    rbp
 	mov     rbp, rsp
-	
+
+	printst color_yel, color_yel_len
 	printch x_char
+	printst color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
@@ -209,7 +220,9 @@ print_o:
 	push    rbp
 	mov     rbp, rsp
 
+	printst color_mag, color_mag_len
 	printch o_char
+	printst color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
