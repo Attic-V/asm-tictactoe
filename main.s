@@ -15,14 +15,6 @@
 	print %1, 1
 %endmacro
 
-%macro chstate 1
-	mov     r10w, %1
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-%endmacro
-
 section .bss
 	input_char resb 1
 
@@ -269,14 +261,54 @@ check_win:              ; (board)
 
 	xor     rax, rax
 
-	chstate 0b111000000
-	chstate 0b000111000
-	chstate 0b000000111
-	chstate 0b100100100
-	chstate 0b010010010
-	chstate 0b001001001
-	chstate 0b100010001
-	chstate 0b001010100
+	mov     r10w, 0b111000000
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b000111000
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b000000111
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b100100100
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b010010010
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b001001001
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b100010001
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
+	mov     r10w, 0b001010100
+	mov     cx, r10w
+	and     cx, r11w
+	cmp     r10w, cx
+	je      .match
+
 	jmp     .end
 
 .match:
