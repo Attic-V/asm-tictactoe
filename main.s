@@ -39,8 +39,8 @@ section .rodata
 	winmsg_o db "O wins!", 0xa              ; win message for o
 	winmsg_o_len equ $ - winmsg_o           ; win message for o length
 
-	drawmsg db "The game has ended ", \     ; draw message
-		"in a draw.", 0xa
+	drawmsg db "The game has ended ", \
+		"in a draw.", 0xa               ; draw message
 	drawmsg_len equ $ - drawmsg             ; draw message length
 
 section .text
