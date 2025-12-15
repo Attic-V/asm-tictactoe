@@ -19,11 +19,11 @@ section .bss
 	in_char resb 1                          ; character input buffer
 
 section .data
-	x_board dw 0
-	o_board dw 0
+	x_board dw 0                            ; bitboard for player x
+	o_board dw 0                            ; bitboard for player x
 
-	x_char db 'X'
-	o_char db 'O'
+	x_char db 'X'                           ; x position
+	o_char db 'O'                           ; o position
 	e_char db '.'                           ; empty position
 
 	newline db 0xa
