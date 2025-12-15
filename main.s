@@ -44,7 +44,7 @@ section .rodata
 	drawmsg_len equ $ - drawmsg             ; draw message length
 
 section .text
-	global _start
+	global _start                           ; expose _start to the linker
 
 _start:
 	call    main
