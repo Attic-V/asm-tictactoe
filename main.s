@@ -30,8 +30,8 @@ section .rodata
 	newline db 0xa                          ; newline character
 	space   db 0x20                         ; space character
 
-	position_prompt db "enter position [1-9]: ", 0
-	position_prompt_len equ $ - position_prompt
+	prompt db "enter position [1-9]: ", 0   ; move prompt string
+	prompt_len equ $ - prompt               ; move prompt string length
 
 	winmsg_x db "X wins!", 0xa
 	winmsg_x_len equ $ - winmsg_x
@@ -111,7 +111,7 @@ place_piece:            ; (lea r14: board)
 
 .loop:
 	push    r14
-	print   position_prompt, position_prompt_len
+	print   prompt, prompt_len
 	call    readchar
 	call    print_newline
 	pop     r14
