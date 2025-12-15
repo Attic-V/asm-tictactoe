@@ -1,8 +1,10 @@
+; printch (%1) - print a single character to stdout
+; %1: character address
 %macro printch 1
-	mov     rax, 1
-	mov     rdi, 1
-	mov     rsi, %1
-	mov     rdx, 1
+	mov             rax, 1                  ; syscall=write
+	mov             rdi, 1                  ; fd=stdout
+	mov             rsi, %1                 ; buf=address
+	mov             rdx, 1                  ; count=1
 	syscall
 %endmacro
 
