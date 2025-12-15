@@ -1,10 +1,10 @@
 ; printch (%1) - print a single character to stdout
 ; %1: character address
 %macro printch 1
-	mov             rax, 1                  ; syscall=write
-	mov             rdi, 1                  ; fd=stdout
-	mov             rsi, %1                 ; buf=address
-	mov             rdx, 1                  ; count=1
+	mov     rax, 1                          ; syscall=write
+	mov     rdi, 1                          ; fd=stdout
+	mov     rsi, %1                         ; buf=address
+	mov     rdx, 1                          ; count=1
 	syscall
 %endmacro
 
@@ -12,10 +12,10 @@
 ; %1: string address
 ; %2: string length
 %macro printst 2
-	mov             rax, 1                  ; syscall=write
-	mov             rdi, 1                  ; fd=stdout
-	mov             rsi, %1                 ; buf=address
-	mov             rdx, %2                 ; count=length
+	mov     rax, 1                          ; syscall=write
+	mov     rdi, 1                          ; fd=stdout
+	mov     rsi, %1                         ; buf=address
+	mov     rdx, %2                         ; count=length
 	syscall
 %endmacro
 
