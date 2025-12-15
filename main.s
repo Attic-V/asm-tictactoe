@@ -16,7 +16,7 @@
 %endmacro
 
 section .bss
-	input_char resb 1
+	in_char resb 1                          ; character input buffer
 
 section .data
 	x_board dw 0
@@ -124,7 +124,7 @@ place_piece:            ; (lea r14: board)
 	call    print_newline
 	pop     r14
 
-	mov     cl, [input_char]
+	mov     cl, [in_char]
 	cmp     cl, '1'
 	jl      .loop
 	cmp     cl, '9'
@@ -325,7 +325,7 @@ readchar:
 
 	mov     rax, 0
 	mov     rdi, 0
-	mov     rsi, input_char
+	mov     rsi, in_char
 	mov     rdx, 1
 	syscall
 
