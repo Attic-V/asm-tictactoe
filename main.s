@@ -22,6 +22,7 @@ section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player x
 
+section .rodata
 	x_char db 'X'                           ; x position
 	o_char db 'O'                           ; o position
 	e_char db '.'                           ; empty position
