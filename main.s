@@ -1,22 +1,18 @@
-; printch (%1) - print a single character to stdout
-; %1: character address
-%macro printch 1
-	mov     rax, 1                          ; syscall=write
-	mov     rdi, 1                          ; fd=stdout
-	mov     rsi, %1                         ; buf=address
-	mov     rdx, 1                          ; count=1
+; print (%1, %2) - print buffer to stdout
+; %1: buffer address
+; %2: buffer length
+%macro print 2
+	mov     rax, 1                          ; write
+	mov     rdi, 1                          ; stdout
+	mov     rsi, %1                         ; address
+	mov     rdx, %2                         ; length
 	syscall
 %endmacro
 
-; printst (%1, %2) - print a string to stdout
-; %1: string address
-; %2: string length
-%macro printst 2
-	mov     rax, 1                          ; syscall=write
-	mov     rdi, 1                          ; fd=stdout
-	mov     rsi, %1                         ; buf=address
-	mov     rdx, %2                         ; count=length
-	syscall
+; printch (%1) - print character to stdout
+; %1: character address
+%macro printch 1
+	print %1, 1
 %endmacro
 
 %macro chstate 1
@@ -109,15 +105,15 @@ main:
 	jmp     .draw
 
 .win_x:
-	printst winmsg_x, winmsg_x_len
+	print   winmsg_x, winmsg_x_len
 	jmp     .end
 
 .win_o:
-	printst winmsg_o, winmsg_o_len
+	print   winmsg_o, winmsg_o_len
 	jmp     .end
 
 .draw:
-	printst drawmsg, drawmsg_len
+	print   drawmsg, drawmsg_len
 	jmp     .end
 
 .end:
@@ -131,7 +127,7 @@ place_piece:            ; (lea r14: board)
 
 .loop:
 	push    r14
-	printst position_prompt, position_prompt_len
+	print   position_prompt, position_prompt_len
 	call    readchar
 	call    print_newline
 	pop     r14
@@ -215,9 +211,9 @@ print_x:
 	push    rbp
 	mov     rbp, rsp
 
-	printst color_yel, color_yel_len
+	print   color_yel, color_yel_len
 	printch x_char
-	printst color_reset, color_reset_len
+	print   color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
@@ -227,9 +223,9 @@ print_o:
 	push    rbp
 	mov     rbp, rsp
 
-	printst color_mag, color_mag_len
+	print   color_mag, color_mag_len
 	printch o_char
-	printst color_reset, color_reset_len
+	print   color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
