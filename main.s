@@ -16,7 +16,7 @@
 %endmacro
 
 section .bss
-	in_char resb 1                          ; character input buffer
+	in_char resb 1                          ; user input buffer
 
 section .data
 	x_board dw 0                            ; bitboard for player x
