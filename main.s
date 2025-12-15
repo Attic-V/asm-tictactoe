@@ -33,11 +33,11 @@ section .rodata
 	prompt db "enter position [1-9]: ", 0   ; move prompt string
 	prompt_len equ $ - prompt               ; move prompt string length
 
-	winmsg_x db "X wins!", 0xa
-	winmsg_x_len equ $ - winmsg_x
+	winmsg_x db "X wins!", 0xa              ; win message for x
+	winmsg_x_len equ $ - winmsg_x           ; win message for x length
 
-	winmsg_o db "O wins!", 0xa
-	winmsg_o_len equ $ - winmsg_o
+	winmsg_o db "O wins!", 0xa              ; win message for o
+	winmsg_o_len equ $ - winmsg_o           ; win message for o length
 
 	drawmsg db "The game has ended in a draw.", 0xa
 	drawmsg_len equ $ - drawmsg
