@@ -49,8 +49,8 @@ section .text
 _start:
 	call    main
 
-	mov     rax, 60
-	mov     rdi, 0
+	mov     rax, 60                         ; exit
+	mov     rdi, 0                          ; code 0
 	syscall
 
 main:
