@@ -30,15 +30,6 @@ section .rodata
 	newline db 0xa                          ; newline character
 	space   db 0x20                         ; space character
 
-	color_yel db `\e[0;33m`, 0
-	color_yel_len equ $ - color_yel
-
-	color_mag db `\e[0;35m`, 0
-	color_mag_len equ $ - color_mag
-
-	color_reset db `\e[0m`, 0
-	color_reset_len equ $ - color_reset
-
 	position_prompt db "enter position [1-9]: ", 0
 	position_prompt_len equ $ - position_prompt
 
@@ -204,9 +195,7 @@ print_x:
 	push    rbp
 	mov     rbp, rsp
 
-	print   color_yel, color_yel_len
 	printch x_char
-	print   color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
@@ -216,9 +205,7 @@ print_o:
 	push    rbp
 	mov     rbp, rsp
 
-	print   color_mag, color_mag_len
 	printch o_char
-	print   color_reset, color_reset_len
 
 	mov     rsp, rbp
 	pop     rbp
