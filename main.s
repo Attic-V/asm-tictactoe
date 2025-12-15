@@ -27,8 +27,8 @@ section .rodata
 	o_char db 'O'                           ; o position
 	e_char db '.'                           ; empty position
 
-	newline db 0xa
-	space   db 0x20
+	newline db 0xa                          ; newline character
+	space   db 0x20                         ; space character
 
 	color_yel db `\e[0;33m`, 0
 	color_yel_len equ $ - color_yel
