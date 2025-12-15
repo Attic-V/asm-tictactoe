@@ -8,11 +8,14 @@
 	syscall
 %endmacro
 
+; printst (%1, %2) - print a string to stdout
+; %1: string address
+; %2: string length
 %macro printst 2
-	mov     rax, 1
-	mov     rdi, 1
-	mov     rsi, %1
-	mov     rdx, %2
+	mov             rax, 1                  ; syscall=write
+	mov             rdi, 1                  ; fd=stdout
+	mov             rsi, %1                 ; buf=address
+	mov             rdx, %2                 ; count=length
 	syscall
 %endmacro
 
