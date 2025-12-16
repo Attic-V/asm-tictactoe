@@ -262,6 +262,7 @@ check_win:              ; (board)
 	pop     rbp
 	ret     2
 
+; readchar () - read single character to in_char and consume following character
 readchar:
 	push    rbp
 	mov     rbp, rsp
