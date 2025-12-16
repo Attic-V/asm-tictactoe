@@ -1,6 +1,7 @@
 ; print (%1, %2) - print buffer to stdout
 ; %1: buffer address
 ; %2: buffer length
+; clobber: rax, rdi, rsi, rdx
 %macro print 2
 	mov     rax, 1                          ; write
 	mov     rdi, 1                          ; stdout
@@ -11,6 +12,7 @@
 
 ; printch (%1) - print character to stdout
 ; %1: character address
+; clobber: rax, rdi, rsi, rdx
 %macro printch 1
 	print %1, 1
 %endmacro
@@ -263,6 +265,7 @@ check_win:              ; (board)
 	ret     2
 
 ; readchar () - read single character to in_char and consume following character
+; clobber: rax, rdi, rsi, rdx
 readchar:
 	push    rbp
 	mov     rbp, rsp
