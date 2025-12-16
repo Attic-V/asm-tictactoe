@@ -58,7 +58,7 @@ main:
 	push    rbp
 	mov     rbp, rsp
 
-	mov     cl, 9
+	mov     cl, 9                           ; 9 board cells to loop through
 
 .x:
 	push    rcx
@@ -146,7 +146,7 @@ print_board:
 	push    rbp
 	mov     rbp, rsp
 
-	mov     rcx, 9                          ; counter
+	mov     cl, 9                           ; 9 board cells to loop through
 	mov     r8w, [x_board]
 	mov     r9w, [o_board]
 
