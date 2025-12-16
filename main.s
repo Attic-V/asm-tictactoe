@@ -17,6 +17,7 @@
 
 section .bss
 	in_char resb 1                          ; user input buffer
+	discard resb 1                          ; dummy buffer
 
 section .data
 	x_board dw 0                            ; bitboard for player x
@@ -265,18 +266,19 @@ readchar:
 	push    rbp
 	mov     rbp, rsp
 
-	mov     rax, 0
-	mov     rdi, 0
-	mov     rsi, in_char
-	mov     rdx, 1
+	mov     rax, 0                          ; read
+	mov     rdi, 0                          ; stdin
+	mov     rsi, in_char                    ; to input character buffer
+	mov     rdx, 1                          ; 1 character
 	syscall
 
-	mov     rax, 0
-	mov     rdi, 0
-	mov     rsi, 0
-	mov     rdx, 1
+	mov     rax, 0                          ; read
+	mov     rdi, 0                          ; stdin
+	mov     rsi, discard                    ; to discard buffer
+	mov     rdx, 1                          ; 1 character
 	syscall                                 ; consume LF
 
 	mov     rsp, rbp
 	pop     rbp
 	ret
+
