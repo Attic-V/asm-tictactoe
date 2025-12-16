@@ -64,7 +64,7 @@ main:
 	lea     r14, [x_board]
 	call    place_piece
 	call    print_board
-	call    print_newline
+	printch newline
 	push    word [x_board]
 	call    check_win
 	pop     rcx
@@ -79,14 +79,16 @@ main:
 	lea     r14, [o_board]
 	call    place_piece
 	call    print_board
-	call    print_newline
+	printch newline
 	push    word [o_board]
 	call    check_win
 	pop     rcx
 	cmp     rax, 1
 	je      .win_o
 
-	loop    .x
+	dec     cl                              ; decrement counter
+	jnz     .x                              ; loop .x if cl > 0
+
 	jmp     .draw
 
 .win_x:
@@ -114,7 +116,7 @@ place_piece:            ; (lea r14: board)
 	push    r14
 	print   prompt, prompt_len
 	call    readchar
-	call    print_newline
+	printch newline
 	pop     r14
 
 	mov     cl, [in_char]
@@ -155,19 +157,19 @@ print_board:
 	jnz     .print_x
 	test    r9w, 0x100
 	jnz     .print_o
-	call    print_e
+	printch e_char
 	jmp     .next
 
 .print_x:
-	call    print_x
+	printch x_char
 	jmp     .next
 
 .print_o:
-	call    print_o
+	printch o_char
 	jmp     .next
 
 .next:
-	call    print_space
+	printch space
 	pop     rcx
 	xor     rdx, rdx
 	mov     rax, rcx
@@ -177,7 +179,7 @@ print_board:
 	test    rdx, rdx
 	jnz     .to_loop                        ; check if remainder is not zero
 	push    rcx
-	call    print_newline
+	printch newline
 	pop     rcx
 	pop     r9
 	pop     r8
@@ -186,57 +188,8 @@ print_board:
 	shl     r8w, 1
 	shl     r9w, 1
 
-	loop    .loop
-
-	mov     rsp, rbp
-	pop     rbp
-	ret
-
-print_x:
-	push    rbp
-	mov     rbp, rsp
-
-	printch x_char
-
-	mov     rsp, rbp
-	pop     rbp
-	ret
-
-print_o:
-	push    rbp
-	mov     rbp, rsp
-
-	printch o_char
-
-	mov     rsp, rbp
-	pop     rbp
-	ret
-
-print_e:
-	push    rbp
-	mov     rbp, rsp
-
-	printch e_char
-
-	mov     rsp, rbp
-	pop     rbp
-	ret
-
-print_newline:
-	push    rbp
-	mov     rbp, rsp
-
-	printch newline
-
-	mov     rsp, rbp
-	pop     rbp
-	ret
-
-print_space:
-	push    rbp
-	mov     rbp, rsp
-
-	printch space
+	dec     cl                              ; decrement counter
+	jnz     .loop                           ; loop .loop if cl > 0
 
 	mov     rsp, rbp
 	pop     rbp
