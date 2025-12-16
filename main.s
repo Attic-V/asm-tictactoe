@@ -14,7 +14,7 @@
 ; %1: character address
 ; clobber: rax, rdi, rsi, rdx
 %macro printch 1
-	print %1, 1
+	print   %1, 1
 %endmacro
 
 section .bss
