@@ -34,12 +34,6 @@
 	print   %1, rcx                         ; print address with length
 %endmacro
 
-; printnl () () - print a newline character
-; clobber: same as printch
-%macro printnl 0
-	printch newline
-%endmacro
-
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
@@ -88,7 +82,7 @@ main:
 	lea     r14, [x_board]
 	call    place_piece
 	call    print_board
-	printnl                                 ; '\n'
+	printch newline                         ; '\n'
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
 	pop     rcx
@@ -103,7 +97,7 @@ main:
 	lea     r14, [o_board]
 	call    place_piece
 	call    print_board
-	printnl                                 ; '\n'
+	printch newline                         ; '\n'
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
 	pop     rcx
@@ -142,7 +136,7 @@ place_piece:            ; (lea r14: board)
 	call    readchar                        ; get move char
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
-	printnl                                 ; '\n'
+	printch newline                         ; '\n'
 	pop     rax                             ; restore input char
 	pop     r14
 
@@ -206,7 +200,7 @@ print_board:
 	test    rdx, rdx
 	jnz     .to_loop                        ; check if remainder is not zero
 	push    rcx
-	printnl                                 ; '\n'
+	printch newline                         ; '\n'
 	pop     rcx
 	pop     r9
 	pop     r8
