@@ -1,7 +1,7 @@
 ; print (%1, %2) - print buffer to stdout
 ; %1: buffer address
 ; %2: buffer length
-; clobber: rax, rdi, rsi, rdx
+; clobber: rax, rdi, rsi, rdx, rcx, r11
 %macro print 2
 	mov     rax, 1                          ; write
 	mov     rdi, 1                          ; stdout
@@ -12,14 +12,14 @@
 
 ; printch (%1) - print character to stdout
 ; %1: character address
-; clobber: rax, rdi, rsi, rdx
+; clobber: rax, rdi, rsi, rdx, rcx, r11
 %macro printch 1
 	print   %1, 1
 %endmacro
 
 ; printst (%1) - print null-terminated string to stdout
 ; %1: buffer address
-; clobber: rax, rdi, rsi, rdx, rcx
+; clobber: rax, rdi, rsi, rdx, rcx, r11
 %macro printst 1
 	mov     rsi, %1                         ; load address of string
 	xor     rcx, rcx                        ; set length counter to zero
@@ -256,7 +256,7 @@ check_win:
 
 ; readchar () (al) - read character from stdin
 ; al: character fread from stdin
-; clobber: rdi, rsi, rdx
+; clobber: rdi, rsi, rdx, rcx, r11
 readchar:
 	push    rbp
 	mov     rbp, rsp
