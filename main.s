@@ -34,6 +34,12 @@
 	print   %1, rcx                         ; print address with length
 %endmacro
 
+; printnl () () - print a newline character
+; clobber: same as printch
+%macro printnl 0
+	printch newline
+%endmacro
+
 section .bss
 	in_char resb 1                          ; user input buffer
 	discard resb 1                          ; dummy buffer
@@ -86,7 +92,7 @@ main:
 	lea     r14, [x_board]
 	call    place_piece
 	call    print_board
-	printch newline
+	printnl                                 ; '\n'
 	push    word [x_board]
 	call    check_win
 	pop     rcx
@@ -101,7 +107,7 @@ main:
 	lea     r14, [o_board]
 	call    place_piece
 	call    print_board
-	printch newline
+	printnl                                 ; '\n'
 	push    word [o_board]
 	call    check_win
 	pop     rcx
@@ -138,7 +144,7 @@ place_piece:            ; (lea r14: board)
 	push    r14
 	printst prompt                          ; display input prompt
 	call    readchar
-	printch newline
+	printnl                                 ; '\n'
 	pop     r14
 
 	mov     cl, [in_char]
@@ -201,7 +207,7 @@ print_board:
 	test    rdx, rdx
 	jnz     .to_loop                        ; check if remainder is not zero
 	push    rcx
-	printch newline
+	printnl                                 ; '\n'
 	pop     rcx
 	pop     r9
 	pop     r8
