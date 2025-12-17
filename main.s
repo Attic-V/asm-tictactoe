@@ -143,7 +143,10 @@ place_piece:            ; (lea r14: board)
 .loop:
 	push    r14
 	printst prompt                          ; display input prompt
-	call    readchar
+	mov     rsi, in_char                    ; pass in_char to readchar
+	call    readchar                        ; get move char
+	mov     rsi, discard                    ; pass discard to readchar
+	call    readchar                        ; consume newline
 	printnl                                 ; '\n'
 	pop     r14
 
@@ -255,23 +258,17 @@ check_win:
 	pop     rbp
 	ret
 
-; readchar () - read single character to in_char and consume following character
-; clobber: rax, rdi, rsi, rdx
+; readchar (rsi) () - read character to buffer from stdin
+; rsi: buffer to read to
+; clobber: rax, rdi, rdx
 readchar:
 	push    rbp
 	mov     rbp, rsp
 
 	mov     rax, 0                          ; read
-	mov     rdi, 0                          ; stdin
-	mov     rsi, in_char                    ; to input character buffer
+	mov     rdi, 0                          ; from stdin
 	mov     rdx, 1                          ; 1 character
-	syscall
-
-	mov     rax, 0                          ; read
-	mov     rdi, 0                          ; stdin
-	mov     rsi, discard                    ; to discard buffer
-	mov     rdx, 1                          ; 1 character
-	syscall                                 ; consume LF
+	syscall                                 ; to [rsi]
 
 	mov     rsp, rbp
 	pop     rbp
