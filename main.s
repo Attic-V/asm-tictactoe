@@ -23,7 +23,7 @@ section .bss
 
 section .data
 	x_board dw 0                            ; bitboard for player x
-	o_board dw 0                            ; bitboard for player x
+	o_board dw 0                            ; bitboard for player o
 
 section .rodata
 	x_char db 'X'                           ; x position
