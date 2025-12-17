@@ -93,8 +93,8 @@ main:
 	call    place_piece
 	call    print_board
 	printnl                                 ; '\n'
-	push    word [x_board]
-	call    check_win
+	mov     rdi, [x_board]                  ; pass x_board to check_win
+	call    check_win                       ; check_win x_board
 	pop     rcx
 	cmp     rax, 1
 	je      .win_x
@@ -108,8 +108,8 @@ main:
 	call    place_piece
 	call    print_board
 	printnl                                 ; '\n'
-	push    word [o_board]
-	call    check_win
+	mov     rdi, [o_board]                  ; pass o_board to check_win
+	call    check_win                       ; check_win o_board
 	pop     rcx
 	cmp     rax, 1
 	je      .win_o
@@ -223,15 +223,13 @@ print_board:
 	pop     rbp
 	ret
 
-; check_win ([rbp + 16]) (rax) - check if a given boardstate contains a wincon
-; [rbp + 16]: word boardstate value
+; check_win (rdi) (rax) - check if a given boardstate contains a wincon
+; rdi: word boardstate value
 ; rax: if wincon was found then 1 else 0
-; clobber: r10w, r11w, r13w, rcx, rsi
-check_win:              ; (board)
+; clobber: r10w, r13w, rcx, rsi
+check_win:
 	push    rbp
 	mov     rbp, rsp
-
-	mov     r11w, [rbp + 16]                ; board passed on stack
 
 	xor     rax, rax                        ; default to returning false
 
@@ -241,7 +239,7 @@ check_win:              ; (board)
 .loop:
 	mov     r10w, [rsi]                     ; load mask
 	mov     r13w, r10w                      ; copy mask into temp register
-	and     r13w, r11w                      ; apply board to temp mask
+	and     r13w, di                        ; apply board to temp mask
 	cmp     r10w, r13w                      ; check if full mask matches
 	je      .match                          ; jump if full mask matches
 
@@ -255,7 +253,7 @@ check_win:              ; (board)
 .end:
 	mov     rsp, rbp
 	pop     rbp
-	ret     2
+	ret
 
 ; readchar () - read single character to in_char and consume following character
 ; clobber: rax, rdi, rsi, rdx
