@@ -40,10 +40,6 @@
 	printch newline
 %endmacro
 
-section .bss
-	in_char resb 1                          ; user input buffer
-	discard resb 1                          ; dummy buffer
-
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
@@ -143,14 +139,14 @@ place_piece:            ; (lea r14: board)
 .loop:
 	push    r14
 	printst prompt                          ; display input prompt
-	mov     rsi, in_char                    ; pass in_char to readchar
 	call    readchar                        ; get move char
-	mov     rsi, discard                    ; pass discard to readchar
+	push    rax                             ; save input char
 	call    readchar                        ; consume newline
 	printnl                                 ; '\n'
+	pop     rax                             ; restore input char
 	pop     r14
 
-	mov     cl, [in_char]
+	mov     cl, al                          ; move input char to cl
 	cmp     cl, '1'
 	jl      .loop
 	cmp     cl, '9'
@@ -258,17 +254,21 @@ check_win:
 	pop     rbp
 	ret
 
-; readchar (rsi) () - read character to buffer from stdin
-; rsi: buffer to read to
-; clobber: rax, rdi, rdx
+; readchar () (al) - read character from stdin
+; al: character fread from stdin
+; clobber: rdi, rsi, rdx
 readchar:
 	push    rbp
 	mov     rbp, rsp
+	sub     rsp, 16                         ; reserve 16 bytes
 
 	mov     rax, 0                          ; read
 	mov     rdi, 0                          ; from stdin
+	mov     rsi, rsp                        ; to local buffer at rsp
 	mov     rdx, 1                          ; 1 character
-	syscall                                 ; to [rsi]
+	syscall
+
+	mov     al, [rsp]                       ; load byte into al
 
 	mov     rsp, rbp
 	pop     rbp
