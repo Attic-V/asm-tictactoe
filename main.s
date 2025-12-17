@@ -58,6 +58,13 @@ section .rodata
 	drawmsg db "The game has ended ", \
 		"in a draw.", 0xa, 0            ; draw message
 
+	win_states dw \
+		0b111000000, 0b000111000, \
+		0b000000111, 0b100100100, \
+		0b010010010, 0b001001001, \
+		0b100010001, 0b001010100        ; all possible wincons
+	win_state_count equ 8                   ; number of possible wincons
+
 section .text
 	global _start                           ; expose _start to the linker
 
@@ -210,66 +217,34 @@ print_board:
 	pop     rbp
 	ret
 
+; check_win ([rbp + 16]) (rax) - check if a given boardstate contains a wincon
+; [rbp + 16]: word boardstate value
+; rax: if wincon was found then 1 else 0
+; clobber: r10w, r11w, r13w, rcx, rsi
 check_win:              ; (board)
 	push    rbp
 	mov     rbp, rsp
 
-	mov     r11w, [rbp + 16]
+	mov     r11w, [rbp + 16]                ; board passed on stack
 
-	xor     rax, rax
+	xor     rax, rax                        ; default to returning false
 
-	mov     r10w, 0b111000000
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
+	mov     rsi, win_states                 ; pointer to win mask list
+	mov     rcx, win_state_count            ; loop counter
 
-	mov     r10w, 0b000111000
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
+.loop:
+	mov     r10w, [rsi]                     ; load mask
+	mov     r13w, r10w                      ; copy mask into temp register
+	and     r13w, r11w                      ; apply board to temp mask
+	cmp     r10w, r13w                      ; check if full mask matches
+	je      .match                          ; jump if full mask matches
 
-	mov     r10w, 0b000000111
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	mov     r10w, 0b100100100
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	mov     r10w, 0b010010010
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	mov     r10w, 0b001001001
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	mov     r10w, 0b100010001
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	mov     r10w, 0b001010100
-	mov     cx, r10w
-	and     cx, r11w
-	cmp     r10w, cx
-	je      .match
-
-	jmp     .end
+	add     rsi, 2                          ; advance to next mask
+	loop    .loop                           ; jmp .loop if (--rcx != 0)
+	jmp     .end                            ; go to end
 
 .match:
-	mov     rax, 1
+	mov     rax, 1                          ; found a wincon
 
 .end:
 	mov     rsp, rbp
