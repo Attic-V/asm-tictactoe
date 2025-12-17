@@ -17,6 +17,23 @@
 	print   %1, 1
 %endmacro
 
+; printst (%1) - print null-terminated string to stdout
+; %1: buffer address
+; clobber: rax, rdi, rsi, rdx, rcx
+%macro printst 1
+	mov     rsi, %1                         ; load address of string
+	xor     rcx, rcx                        ; set length counter to zero
+
+%%loop:
+	cmp     byte [rsi + rcx], 0             ; check for null terminator byte
+	je      %%done                          ; if found then jump to end
+	inc     rcx                             ; else increment length counter
+	jmp     %%loop                          ; repeat loop
+
+%%done:
+	print   %1, rcx                         ; print address with length
+%endmacro
+
 section .bss
 	in_char resb 1                          ; user input buffer
 	discard resb 1                          ; dummy buffer
@@ -34,17 +51,12 @@ section .rodata
 	space   db 0x20                         ; space character
 
 	prompt db "enter position [1-9]: ", 0   ; move prompt string
-	prompt_len equ $ - prompt               ; move prompt string length
 
-	winmsg_x db "X wins!", 0xa              ; win message for x
-	winmsg_x_len equ $ - winmsg_x           ; win message for x length
-
-	winmsg_o db "O wins!", 0xa              ; win message for o
-	winmsg_o_len equ $ - winmsg_o           ; win message for o length
+	winmsg_x db "X wins!", 0xa, 0           ; win message for x
+	winmsg_o db "O wins!", 0xa, 0           ; win message for o
 
 	drawmsg db "The game has ended ", \
-		"in a draw.", 0xa               ; draw message
-	drawmsg_len equ $ - drawmsg             ; draw message length
+		"in a draw.", 0xa, 0            ; draw message
 
 section .text
 	global _start                           ; expose _start to the linker
@@ -95,15 +107,15 @@ main:
 	jmp     .draw
 
 .win_x:
-	print   winmsg_x, winmsg_x_len
+	printst winmsg_x                        ; display x win message
 	jmp     .end
 
 .win_o:
-	print   winmsg_o, winmsg_o_len
+	printst winmsg_o                        ; display o win message
 	jmp     .end
 
 .draw:
-	print   drawmsg, drawmsg_len
+	printst drawmsg                         ; display draw message
 	jmp     .end
 
 .end:
@@ -117,7 +129,7 @@ place_piece:            ; (lea r14: board)
 
 .loop:
 	push    r14
-	print   prompt, prompt_len
+	printst prompt                          ; display input prompt
 	call    readchar
 	printch newline
 	pop     r14
