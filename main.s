@@ -71,36 +71,35 @@ main:
 	mov     cl, 9                           ; 9 board cells to loop through
 
 .x:
-	push    rcx
-	lea     r14, [x_board]
-	call    place_piece
-	call    print_board
+	push    rcx                             ; save rcx
+	lea     r14, [x_board]                  ; pass x board to place_piece
+	call    place_piece                     ; place piece in x board
+	call    print_board                     ; display board
 	print   newline, 1                      ; '\n'
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
-	pop     rcx
-	cmp     rax, 1
-	je      .win_x
+	pop     rcx                             ; restore rcx
+	cmp     rax, 1                          ; if x won
+	je      .win_x                          ; then jump .win_x
 
-	loop    .o
-	jmp     .draw
+	loop    .o                              ; dec cl and jump .o if cl > 0
+	jmp     .draw                           ; else go to .draw
 
 .o:
-	push    rcx
-	lea     r14, [o_board]
-	call    place_piece
-	call    print_board
+	push    rcx                             ; save rcx
+	lea     r14, [o_board]                  ; pass o board to place_piece
+	call    place_piece                     ; place piece in o board
+	call    print_board                     ; display board
 	print   newline, 1                      ; '\n'
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
-	pop     rcx
-	cmp     rax, 1
-	je      .win_o
+	pop     rcx                             ; restore rcx
+	cmp     rax, 1                          ; if o won
+	je      .win_o                          ; then jump .win_o
 
 	dec     cl                              ; decrement counter
 	jnz     .x                              ; loop .x if cl > 0
-
-	jmp     .draw
+	jmp     .draw                           ; else go to .draw
 
 .win_x:
 	printst winmsg_x                        ; display x win message
