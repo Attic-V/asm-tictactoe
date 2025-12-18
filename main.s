@@ -119,35 +119,37 @@ main:
 	pop     rbp
 	ret
 
-place_piece:            ; (lea r14: board)
+; place_piece (r14) () - place piece on board
+; r14: board address
+place_piece:
 	push    rbp
 	mov     rbp, rsp
 
 .loop:
 	printst prompt                          ; display input prompt
-	call    readchar                        ; get move char
+	call    readchar                        ; get desired cell number
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
 	print   newline, 1                      ; '\n'
 	pop     rax                             ; restore input char
 
 	mov     cl, al                          ; move input char to cl
-	cmp     cl, '1'
-	jl      .loop
-	cmp     cl, '9'
-	jg      .loop
-	sub     cl, '0'
-	dec     cl
+	cmp     cl, '1'                         ; if target cell < 1
+	jl      .loop                           ; then try again
+	cmp     cl, '9'                         ; if target cell > 9
+	jg      .loop                           ; then try again
+	sub     cl, '0'                         ; convert digit char to int
+	dec     cl                              ; target 1 is cell 0
 
-	mov     r12w, 0x100
-	shr     r12w, cl
+	mov     r12w, 0x100                     ; place in temp board 0 cell
+	shr     r12w, cl                        ; shift to correct cell
 
-	mov     ax, [x_board]
-	or      ax, [o_board]
-	test    ax, r12w
-	jnz     .loop
+	mov     ax, [x_board]                   ; move x board to ax
+	or      ax, [o_board]                   ; or o board with x board in ax
+	test    ax, r12w                        ; if target cell is occupied
+	jnz     .loop                           ; then try again
 
-	or      [r14], r12w
+	or      [r14], r12w                     ; place piece in cell on board
 
 	mov     rsp, rbp
 	pop     rbp
