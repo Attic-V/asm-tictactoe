@@ -183,11 +183,11 @@ print_board:
 .next:
 	print   space, 1                        ; print space
 	pop     rcx                             ; restore rcx
-	xor     rdx, rdx                        ; clear rdx
+	xor     rdx, rdx                        ; zero upper half of dividend
 	mov     rax, rcx                        ; copy loop count to rax
-	add     rax, 2                          ; offset 2
-	mov     rbx, 3                          ; divisor
-	div     rbx                             ; divide rax by rbx
+	add     rax, 2                          ; offset loop count by 2
+	mov     rbx, 3                          ; divisor is 3
+	div     rbx                             ; divide rdx:rax by rbx
 	test    rdx, rdx                        ; check if remainder is zero
 	jnz     .to_loop                        ; loop if false
 	push    rcx                             ; save rcx
