@@ -10,13 +10,6 @@
 	syscall
 %endmacro
 
-; printch (%1) - print character to stdout
-; %1: character address
-; clobber: rax, rdi, rsi, rdx, rcx, r11
-%macro printch 1
-	print   %1, 1
-%endmacro
-
 ; printst (%1) - print null-terminated string to stdout
 ; %1: buffer address
 ; clobber: rax, rdi, rsi, rdx, rcx, r11
@@ -82,7 +75,7 @@ main:
 	lea     r14, [x_board]
 	call    place_piece
 	call    print_board
-	printch newline                         ; '\n'
+	print   newline, 1                      ; '\n'
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
 	pop     rcx
@@ -97,7 +90,7 @@ main:
 	lea     r14, [o_board]
 	call    place_piece
 	call    print_board
-	printch newline                         ; '\n'
+	print   newline, 1                      ; '\n'
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
 	pop     rcx
@@ -135,7 +128,7 @@ place_piece:            ; (lea r14: board)
 	call    readchar                        ; get move char
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
-	printch newline                         ; '\n'
+	print   newline, 1                      ; '\n'
 	pop     rax                             ; restore input char
 
 	mov     cl, al                          ; move input char to cl
@@ -174,19 +167,19 @@ print_board:
 	jnz     .print_x
 	test    r9w, 0x100
 	jnz     .print_o
-	printch e_char
+	print   e_char, 1                       ; print empty cell character
 	jmp     .next
 
 .print_x:
-	printch x_char
+	print   x_char, 1                       ; print x character
 	jmp     .next
 
 .print_o:
-	printch o_char
+	print   o_char, 1                       ; print o character
 	jmp     .next
 
 .next:
-	printch space
+	print   space, 1                        ; print space
 	pop     rcx
 	xor     rdx, rdx
 	mov     rax, rcx
@@ -196,7 +189,7 @@ print_board:
 	test    rdx, rdx
 	jnz     .to_loop                        ; check if remainder is not zero
 	push    rcx
-	printch newline                         ; '\n'
+	print   newline, 1                      ; '\n'
 	pop     rcx
 
 .to_loop:
