@@ -131,14 +131,12 @@ place_piece:            ; (lea r14: board)
 	mov     rbp, rsp
 
 .loop:
-	push    r14
 	printst prompt                          ; display input prompt
 	call    readchar                        ; get move char
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
 	printch newline                         ; '\n'
 	pop     rax                             ; restore input char
-	pop     r14
 
 	mov     cl, al                          ; move input char to cl
 	cmp     cl, '1'
@@ -171,8 +169,6 @@ print_board:
 	mov     r9w, [o_board]
 
 .loop:
-	push    r8
-	push    r9
 	push    rcx
 	test    r8w, 0x100
 	jnz     .print_x
@@ -202,8 +198,6 @@ print_board:
 	push    rcx
 	printch newline                         ; '\n'
 	pop     rcx
-	pop     r9
-	pop     r8
 
 .to_loop:
 	shl     r8w, 1
