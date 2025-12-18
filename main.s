@@ -153,20 +153,22 @@ place_piece:            ; (lea r14: board)
 	pop     rbp
 	ret
 
+; print_board () () - display board to stdout
+; clobber: rcx, r8w, r9w, rax, rdx, rbx, rdi, rsi, r11
 print_board:
 	push    rbp
 	mov     rbp, rsp
 
 	mov     cl, 9                           ; 9 board cells to loop through
-	mov     r8w, [x_board]
-	mov     r9w, [o_board]
+	mov     r8w, [x_board]                  ; copy x board to r8w
+	mov     r9w, [o_board]                  ; copy o board to r9w
 
 .loop:
-	push    rcx
-	test    r8w, 0x100
-	jnz     .print_x
-	test    r9w, 0x100
-	jnz     .print_o
+	push    rcx                             ; save rcx
+	test    r8w, 0x100                      ; check if x occupies cell
+	jnz     .print_x                        ; jump if true
+	test    r9w, 0x100                      ; check if o occupies cell
+	jnz     .print_o                        ; jump if true
 	print   e_char, 1                       ; print empty cell character
 	jmp     .next
 
@@ -180,21 +182,21 @@ print_board:
 
 .next:
 	print   space, 1                        ; print space
-	pop     rcx
-	xor     rdx, rdx
-	mov     rax, rcx
-	add     rax, 2
-	mov     rbx, 3
-	div     rbx
-	test    rdx, rdx
-	jnz     .to_loop                        ; check if remainder is not zero
-	push    rcx
+	pop     rcx                             ; restore rcx
+	xor     rdx, rdx                        ; clear rdx
+	mov     rax, rcx                        ; copy loop count to rax
+	add     rax, 2                          ; offset 2
+	mov     rbx, 3                          ; divisor
+	div     rbx                             ; divide rax by rbx
+	test    rdx, rdx                        ; check if remainder is zero
+	jnz     .to_loop                        ; loop if false
+	push    rcx                             ; save rcx
 	print   newline, 1                      ; '\n'
-	pop     rcx
+	pop     rcx                             ; restore rcx
 
 .to_loop:
-	shl     r8w, 1
-	shl     r9w, 1
+	shl     r8w, 1                          ; shift temp board left
+	shl     r9w, 1                          ; shift temp board left
 
 	dec     cl                              ; decrement counter
 	jnz     .loop                           ; loop .loop if cl > 0
