@@ -1,22 +1,3 @@
-; printst (%1) - print null-terminated string to stdout
-; %1: buffer address
-; clobber: rax, rdi, rsi, rdx, rcx, r11
-%macro printst 1
-	mov     rsi, %1                         ; load address of string
-	xor     rcx, rcx                        ; set length counter to zero
-
-%%loop:
-	cmp     byte [rsi + rcx], 0             ; check for null terminator byte
-	je      %%done                          ; if found then jump to end
-	inc     rcx                             ; else increment length counter
-	jmp     %%loop                          ; repeat loop
-
-%%done:
-	mov     rdi, rsi                        ; pass address to print
-	mov     rsi, rcx                        ; pass length to print
-	call    print
-%endmacro
-
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
@@ -98,18 +79,18 @@ main:
 	jmp     .draw                           ; else go to .draw
 
 .win_x:
-	printst winmsg_x                        ; display x win message
+	mov     rdi, winmsg_x                   ; pass to printst
 	jmp     .end
-
 .win_o:
-	printst winmsg_o                        ; display o win message
+	mov     rdi, winmsg_o                   ; pass to printst
 	jmp     .end
-
 .draw:
-	printst drawmsg                         ; display draw message
+	mov     rdi, drawmsg                    ; pass to printst
 	jmp     .end
 
 .end:
+	call    printst
+
 	mov     rsp, rbp
 	pop     rbp
 	ret
@@ -121,7 +102,9 @@ place_piece:
 	mov     rbp, rsp
 
 .loop:
-	printst prompt                          ; display input prompt
+	mov     rdi, prompt                     ; pass to printst
+	call    printst
+
 	call    readchar                        ; get desired cell number
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
@@ -296,6 +279,29 @@ print:
 	mov     rax, 1                          ; write
 	mov     rdi, 1                          ; stdout
 	syscall
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
+; printst (rdi) () - write a null-terminated buffer to stdout
+; rdi: buffer address
+; System V ABI compatible
+printst:
+	push    rbp
+	mov     rbp, rsp
+
+	xor     rcx, rcx                        ; set counter to zero
+
+.loop:
+	cmp     byte [rdi + rcx], 0             ; check for null byte
+	je      .done                           ; if found then break
+	inc     rcx                             ; else increment counter
+	jmp     .loop
+
+.done:
+	mov     rsi, rcx                        ; pass length to print
+	call    print
 
 	mov     rsp, rbp
 	pop     rbp
