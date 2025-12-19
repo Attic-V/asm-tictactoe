@@ -230,9 +230,9 @@ check_win:
 	pop     rbp
 	ret
 
-; readchar () (al) - read character from stdin
-; al: character fread from stdin
-; clobber: rdi, rsi, rdx, rcx, r11
+; readchar () (rax) - read character from stdin
+; rax: character read from stdin
+; System V ABI compatible
 readchar:
 	push    rbp
 	mov     rbp, rsp
@@ -244,7 +244,7 @@ readchar:
 	mov     rdx, 1                          ; 1 character
 	syscall
 
-	mov     al, [rsp]                       ; load byte into al
+	mov     rax, [rsp]                      ; load character into rax
 
 	mov     rsp, rbp
 	pop     rbp
