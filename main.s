@@ -66,7 +66,7 @@ main:
 	call    place_piece                     ; place piece in x board
 	call    print_board                     ; display board
 
-	mov     dil, [newline]
+	mov     rdi, [newline]
 	call    printch                         ; '\n'
 
 	mov     rdi, [x_board]                  ; pass x_board to check_win
@@ -84,7 +84,7 @@ main:
 	call    place_piece                     ; place piece in o board
 	call    print_board                     ; display board
 
-	mov     dil, [newline]
+	mov     rdi, [newline]
 	call    printch                         ; '\n'
 
 	mov     rdi, [o_board]                  ; pass o_board to check_win
@@ -126,7 +126,7 @@ place_piece:
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
 
-	mov     dil, [newline]
+	mov     rdi, [newline]
 	call    printch                         ; '\n'
 
 	pop     rax                             ; restore input char
@@ -170,21 +170,21 @@ print_board:
 	test    r9w, 0x100                      ; check if o occupies cell
 	jnz     .print_o                        ; jump if true
 
-	mov     dil, [e_char]                   ; pass empty char to printch
+	mov     rdi, [e_char]                   ; pass empty char to printch
 	jmp     .next
 
 .print_x:
-	mov     dil, [x_char]                   ; pass x char to printch
+	mov     rdi, [x_char]                   ; pass x char to printch
 	jmp     .next
 
 .print_o:
-	mov     dil, [o_char]                   ; pass o char to printch
+	mov     rdi, [o_char]                   ; pass o char to printch
 	jmp     .next
 
 .next:
 	call    printch                         ; print char passed in
 
-	mov     dil, [space]
+	mov     rdi, [space]
 	call    printch                         ; print space
 
 	pop     rcx                             ; restore rcx
@@ -197,7 +197,7 @@ print_board:
 	jnz     .to_loop                        ; loop if false
 	push    rcx                             ; save rcx
 
-	mov     dil, [newline]
+	mov     rdi, [newline]
 	call    printch                         ; '\n'
 
 	pop     rcx                             ; restore rcx
@@ -265,8 +265,8 @@ readchar:
 	pop     rbp
 	ret
 
-; printch (dil) () - write character to stdout
-; dil: character
+; printch (rdi) () - write character to stdout
+; rdi: character
 ; System V ABI compatible
 printch:
 	push    rbp
