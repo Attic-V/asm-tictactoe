@@ -75,7 +75,10 @@ main:
 	lea     r14, [x_board]                  ; pass x board to place_piece
 	call    place_piece                     ; place piece in x board
 	call    print_board                     ; display board
-	print   newline, 1                      ; '\n'
+
+	mov     dil, [newline]
+	call    printch                         ; '\n'
+
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
 	pop     rcx                             ; restore rcx
@@ -90,7 +93,10 @@ main:
 	lea     r14, [o_board]                  ; pass o board to place_piece
 	call    place_piece                     ; place piece in o board
 	call    print_board                     ; display board
-	print   newline, 1                      ; '\n'
+
+	mov     dil, [newline]
+	call    printch                         ; '\n'
+
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
 	pop     rcx                             ; restore rcx
@@ -129,7 +135,10 @@ place_piece:
 	call    readchar                        ; get desired cell number
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
-	print   newline, 1                      ; '\n'
+
+	mov     dil, [newline]
+	call    printch                         ; '\n'
+
 	pop     rax                             ; restore input char
 
 	mov     cl, al                          ; move input char to cl
@@ -160,7 +169,7 @@ print_board:
 	push    rbp
 	mov     rbp, rsp
 
-	mov     cl, 9                           ; 9 board cells to loop through
+	mov     rcx, 9                          ; 9 board cells to loop through
 	mov     r8w, [x_board]                  ; copy x board to r8w
 	mov     r9w, [o_board]                  ; copy o board to r9w
 
@@ -170,19 +179,24 @@ print_board:
 	jnz     .print_x                        ; jump if true
 	test    r9w, 0x100                      ; check if o occupies cell
 	jnz     .print_o                        ; jump if true
-	print   e_char, 1                       ; print empty cell character
+
+	mov     dil, [e_char]                   ; pass empty char to printch
 	jmp     .next
 
 .print_x:
-	print   x_char, 1                       ; print x character
+	mov     dil, [x_char]                   ; pass x char to printch
 	jmp     .next
 
 .print_o:
-	print   o_char, 1                       ; print o character
+	mov     dil, [o_char]                   ; pass o char to printch
 	jmp     .next
 
 .next:
-	print   space, 1                        ; print space
+	call    printch                         ; print char passed in
+
+	mov     dil, [space]
+	call    printch                         ; print space
+
 	pop     rcx                             ; restore rcx
 	xor     rdx, rdx                        ; zero upper half of dividend
 	mov     rax, rcx                        ; copy loop count to rax
@@ -192,7 +206,10 @@ print_board:
 	test    rdx, rdx                        ; check if remainder is zero
 	jnz     .to_loop                        ; loop if false
 	push    rcx                             ; save rcx
-	print   newline, 1                      ; '\n'
+
+	mov     dil, [newline]
+	call    printch                         ; '\n'
+
 	pop     rcx                             ; restore rcx
 
 .to_loop:
@@ -258,3 +275,23 @@ readchar:
 	pop     rbp
 	ret
 
+; printch (dil) () - write character to stdout
+; dil: character
+; System V ABI compatible
+printch:
+	push    rbp
+	mov     rbp, rsp
+
+	sub     rsp, 16                         ; reserve space on stack
+
+	mov     [rsp], dil                      ; move character to buffer
+
+	mov     rax, 1                          ; write
+	mov     rdi, 1                          ; stdout
+	lea     rsi, [rsp]                      ; &char
+	mov     rdx, 1                          ; 1
+	syscall
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
