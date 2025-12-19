@@ -271,16 +271,13 @@ readchar:
 printch:
 	push    rbp
 	mov     rbp, rsp
-
 	sub     rsp, 16                         ; reserve space on stack
 
 	mov     [rsp], dil                      ; move character to buffer
 
-	mov     rax, 1                          ; write
-	mov     rdi, 1                          ; stdout
-	lea     rsi, [rsp]                      ; &char
-	mov     rdx, 1                          ; 1
-	syscall
+	mov     rdi, rsp                        ; pass buffer to print
+	mov     rsi, 1                          ; pass length 1 to print
+	call    print
 
 	mov     rsp, rbp
 	pop     rbp
