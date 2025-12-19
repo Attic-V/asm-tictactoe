@@ -1,6 +1,6 @@
 section .text
-global printch                                  ; expose to linker
-global printst                                  ; expose to linker
+	global printch                          ; expose to linker
+	global printst                          ; expose to linker
 
 ; printch (rdi) () - write character to stdout
 ; rdi: character
