@@ -1,15 +1,3 @@
-; print (%1, %2) - print buffer to stdout
-; %1: buffer address
-; %2: buffer length
-; clobber: rax, rdi, rsi, rdx, rcx, r11
-%macro print 2
-	mov     rax, 1                          ; write
-	mov     rdi, 1                          ; stdout
-	mov     rsi, %1                         ; address
-	mov     rdx, %2                         ; length
-	syscall
-%endmacro
-
 ; printst (%1) - print null-terminated string to stdout
 ; %1: buffer address
 ; clobber: rax, rdi, rsi, rdx, rcx, r11
@@ -24,7 +12,9 @@
 	jmp     %%loop                          ; repeat loop
 
 %%done:
-	print   %1, rcx                         ; print address with length
+	mov     rdi, rsi                        ; pass address to print
+	mov     rsi, rcx                        ; pass length to print
+	call    print
 %endmacro
 
 section .data
@@ -290,6 +280,24 @@ printch:
 	mov     rdi, 1                          ; stdout
 	lea     rsi, [rsp]                      ; &char
 	mov     rdx, 1                          ; 1
+	syscall
+
+	mov     rsp, rbp
+	pop     rbp
+	ret
+
+; print (rdi, rsi) () - write buffer to stdout
+; rdi: buffer address
+; rsi: buffer length
+; System V ABI compatible
+print:
+	push    rbp
+	mov     rbp, rsp
+
+	mov     rdx, rsi                        ; length
+	mov     rsi, rdi                        ; address
+	mov     rax, 1                          ; write
+	mov     rdi, 1                          ; stdout
 	syscall
 
 	mov     rsp, rbp
