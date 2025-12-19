@@ -1,9 +1,13 @@
 section .text
 	global readchar                         ; expose to linker
 
-; readchar () (rax) - read character from stdin
-; rax: character read from stdin
+;===============================================
+; char readchar ();
+;-----------------------------------------------
+; read character from stdin
+;
 ; System V ABI compatible
+;===============================================
 readchar:
 	push    rbp
 	mov     rbp, rsp

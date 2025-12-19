@@ -2,9 +2,13 @@ section .text
 	global printch                          ; expose to linker
 	global printst                          ; expose to linker
 
-; printch (rdi) () - write character to stdout
-; rdi: character
+;===============================================
+; void printch (char c);
+;-----------------------------------------------
+; write character to stdout
+;
 ; System V ABI compatible
+;===============================================
 printch:
 	push    rbp
 	mov     rbp, rsp
@@ -20,10 +24,13 @@ printch:
 	pop     rbp
 	ret
 
-; print (rdi, rsi) () - write buffer to stdout
-; rdi: buffer address
-; rsi: buffer length
+;===============================================
+; void print (char *buf, int len);
+;-----------------------------------------------
+; write buffer to stdout
+;
 ; System V ABI compatible
+;===============================================
 print:
 	push    rbp
 	mov     rbp, rsp
@@ -38,9 +45,13 @@ print:
 	pop     rbp
 	ret
 
-; printst (rdi) () - write a null-terminated buffer to stdout
-; rdi: buffer address
+;===============================================
+; void printst (char *buf);
+;-----------------------------------------------
+; write null-terminated buffer to stdout
+;
 ; System V ABI compatible
+;===============================================
 printst:
 	push    rbp
 	mov     rbp, rsp
