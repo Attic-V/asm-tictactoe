@@ -26,9 +26,9 @@ section .rodata
 	win_state_count equ 8                   ; number of possible wincons
 
 section .text
-	extern printch
-	extern printst
-	extern readchar
+	extern printch                          ; print.s
+	extern printst                          ; print.s
+	extern readchar                         ; read.s
 	global _start                           ; expose _start to the linker
 
 _start:
