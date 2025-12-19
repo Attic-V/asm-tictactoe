@@ -1,21 +1,28 @@
-SRC = main.s
-OBJ = main.o
-OUT = out
+.PHONY: all clean
 
-DIR_BUILD = build
+SRC_DIR := src
+SRC_DIR_SRCS := $(wildcard $(SRC_DIR)/*.s)
 
-all: $(OUT)
-build: $(OUT)
+BUILD_DIR := build
+BUILD_DIR_OBJS := \
+	$(patsubst $(SRC_DIR)/%.s,$(BUILD_DIR)/%.o,$(SRC_DIR_SRCS))
 
-$(DIR_BUILD)/$(OBJ): $(SRC)
-	@mkdir -p build
-	nasm -f elf64 -o $(DIR_BUILD)/$(OBJ) $(SRC)
+BIN_DIR := bin
 
-$(OUT): $(DIR_BUILD)/$(OBJ)
-	ld -o $(OUT) $(DIR_BUILD)/$(OBJ)
+OUT := out
+TARGET := $(BIN_DIR)/$(OUT)
+
+all: $(TARGET)
+
+$(TARGET): $(BUILD_DIR_OBJS) | $(BIN_DIR)
+	ld -o $@ $^
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.s | $(BUILD_DIR)
+	nasm -f elf64 -o $@ $^
+
+$(BIN_DIR) $(BUILD_DIR):
+	mkdir -p $@
 
 clean:
-	rm -rdf $(DIR_BUILD)
-	rm -f $(OUT)
-
-.PHONY: all clean
+	$(RM) -r $(BUILD_DIR)
+	$(RM) -r $(BIN_DIR)
