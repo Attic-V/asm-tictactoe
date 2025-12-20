@@ -118,7 +118,6 @@ place_piece:
 	pop     rdi                             ; restore board address
 
 	mov     cl, al                          ; move input to cl
-	dec     cl                              ; target 1 is cell 0
 
 	mov     r10d, 0x100                     ; place in temp board 0 cell
 	shr     r10d, cl                        ; shift to correct cell
@@ -228,7 +227,9 @@ check_win:
 ; int getCellInput ()
 ;-----------------------------------------------
 ; Reads a cell number and line feed from stdin
-; and returns the cell number as an int.
+; and returns the cell number as an int. The
+; input taken will be of the range 1-9 and the
+; cell number returned will be of 0-8.
 ;
 ; This function is System V ABI compliant.
 ;===============================================
@@ -237,6 +238,7 @@ getCellInput:
 	call    printst                         ; display prompt
 
 	call    read_getDigit                   ; get cell number
+	dec     rax                             ; map 1-9 to 0-8
 	push    rax                             ; save cell number
 	call    readchar                        ; consume LF
 
