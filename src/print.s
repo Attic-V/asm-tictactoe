@@ -32,17 +32,12 @@ printch:
 ; System V ABI compatible
 ;===============================================
 print:
-	push    rbp
-	mov     rbp, rsp
-
 	mov     rdx, rsi                        ; length
 	mov     rsi, rdi                        ; address
 	mov     rax, 1                          ; write
 	mov     rdi, 1                          ; stdout
 	syscall
 
-	mov     rsp, rbp
-	pop     rbp
 	ret
 
 ;===============================================
