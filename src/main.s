@@ -1,3 +1,6 @@
+LF    equ 10
+SPACE equ 32
+
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
@@ -7,16 +10,13 @@ section .rodata
 	o_char db 'O'                           ; o position
 	e_char db '.'                           ; empty position
 
-	newline db 0xa                          ; newline character
-	space   db 0x20                         ; space character
-
 	prompt db "enter position [1-9]: ", 0   ; move prompt string
 
-	winmsg_x db "X wins!", 0xa, 0           ; win message for x
-	winmsg_o db "O wins!", 0xa, 0           ; win message for o
+	winmsg_x db "X wins!", LF, 0            ; win message for x
+	winmsg_o db "O wins!", LF, 0            ; win message for o
 
 	drawmsg db "The game has ended ", \
-		"in a draw.", 0xa, 0            ; draw message
+		"in a draw.", LF, 0             ; draw message
 
 	win_states dw \
 		0b111000000, 0b000111000, \
@@ -50,8 +50,8 @@ main:
 	call    place_piece                     ; place piece in x board
 	call    print_board                     ; display board
 
-	mov     rdi, [newline]
-	call    printch                         ; '\n'
+	mov     rdi, LF
+	call    printch
 
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
@@ -68,8 +68,8 @@ main:
 	call    place_piece                     ; place piece in o board
 	call    print_board                     ; display board
 
-	mov     rdi, [newline]
-	call    printch                         ; '\n'
+	mov     rdi, LF
+	call    printch
 
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
@@ -112,8 +112,8 @@ place_piece:
 	push    rax                             ; save input char
 	call    readchar                        ; consume newline
 
-	mov     rdi, [newline]
-	call    printch                         ; '\n'
+	mov     rdi, LF
+	call    printch
 
 	pop     rax                             ; restore input char
 
@@ -170,7 +170,7 @@ print_board:
 .next:
 	call    printch                         ; print char passed in
 
-	mov     rdi, [space]
+	mov     rdi, SPACE
 	call    printch                         ; print space
 
 	pop     rcx                             ; restore rcx
@@ -183,8 +183,8 @@ print_board:
 	jnz     .to_loop                        ; loop if false
 	push    rcx                             ; save rcx
 
-	mov     rdi, [newline]
-	call    printch                         ; '\n'
+	mov     rdi, LF
+	call    printch
 
 	pop     rcx                             ; restore rcx
 
