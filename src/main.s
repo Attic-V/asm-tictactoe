@@ -199,34 +199,32 @@ print_board:
 	pop     rbp
 	ret
 
-; check_win (rdi) (rax) - check if a given boardstate contains a wincon
-; rdi: word boardstate value
-; rax: if wincon was found then 1 else 0
-; clobber: r10w, r13w, rcx, rsi
+;===============================================
+; int check_win (int boardstate)
+;-----------------------------------------------
+; Checks whether the given board state contains
+; a win condition.
+;
+; Returns 1 if the a win condition exists and 0
+; otherwise.
+;
+; System V ABI compatible
+;===============================================
 check_win:
-	push    rbp
-	mov     rbp, rsp
-
-	xor     rax, rax                        ; default to returning false
-
-	mov     rsi, win_states                 ; pointer to win mask list
-	mov     rcx, win_state_count            ; loop counter
+	mov     rsi, win_states                 ; save win state array to rsi
+	mov     rcx, win_state_count            ; save win state count to rcx
 
 .loop:
-	mov     r10w, [rsi]                     ; load mask
-	mov     r13w, r10w                      ; copy mask into temp register
-	and     r13w, di                        ; apply board to temp mask
-	cmp     r10w, r13w                      ; check if full mask matches
-	je      .match                          ; jump if full mask matches
+	mov     r8w, [rsi + 2*rcx - 2]          ; load mask
+	mov     r9w, r8w                        ; copy mask
+	and     r9w, di                         ; apply board to mask
+	cmp     r8w, r9w                        ; check if union matches mask
+	je      .match                          ; exit if they do match
 
-	add     rsi, 2                          ; advance to next mask
-	loop    .loop                           ; jmp .loop if (--rcx != 0)
-	jmp     .end                            ; go to end
+	loop    .loop
+	mov     rax, 0                          ; wincon not found
+	ret
 
 .match:
-	mov     rax, 1                          ; found a wincon
-
-.end:
-	mov     rsp, rbp
-	pop     rbp
+	mov     rax, 1                          ; wincon found
 	ret
