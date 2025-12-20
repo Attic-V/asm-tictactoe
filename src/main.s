@@ -1,15 +1,15 @@
 LF    equ 10
 SPACE equ 32
 
+MARKER_X    equ 'X'
+MARKER_O    equ 'O'
+MARKER_NONE equ '.'
+
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
 
 section .rodata
-	x_char db 'X'                           ; x position
-	o_char db 'O'                           ; o position
-	e_char db '.'                           ; empty position
-
 	prompt db "enter position [1-9]: ", 0   ; move prompt string
 
 	winmsg_x db "X wins!", LF, 0            ; win message for x
@@ -156,15 +156,15 @@ print_board:
 	test    r9w, 0x100                      ; check if o occupies cell
 	jnz     .print_o                        ; jump if true
 
-	mov     rdi, [e_char]                   ; pass empty char to printch
+	mov     rdi, MARKER_NONE                ; pass empty marker to printch
 	jmp     .next
 
 .print_x:
-	mov     rdi, [x_char]                   ; pass x char to printch
+	mov     rdi, MARKER_X                   ; pass x marker to printch
 	jmp     .next
 
 .print_o:
-	mov     rdi, [o_char]                   ; pass o char to printch
+	mov     rdi, MARKER_O                   ; pass o marker to printch
 	jmp     .next
 
 .next:
