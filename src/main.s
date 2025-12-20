@@ -114,20 +114,10 @@ place_piece:
 
 .loop:
 	push    rdi                             ; save board address
-	mov     rdi, prompt                     ; pass to printst
-	call    printst
-
-	call    read_getDigit                   ; get desired cell number
-	push    rax                             ; save input digit
-	call    readchar                        ; consume newline
-
-	mov     rdi, LF
-	call    printch
-
-	pop     rax                             ; restore input digit
+	call    getCellInput
 	pop     rdi                             ; restore board address
 
-	mov     cl, al                          ; move input char to cl
+	mov     cl, al                          ; move input to cl
 	dec     cl                              ; target 1 is cell 0
 
 	mov     r10d, 0x100                     ; place in temp board 0 cell
@@ -232,4 +222,26 @@ check_win:
 
 .match:
 	mov     rax, 1                          ; wincon found
+	ret
+
+;===============================================
+; int getCellInput ()
+;-----------------------------------------------
+; Reads a cell number and line feed from stdin
+; and returns the cell number as an int.
+;
+; This function is System V ABI compliant.
+;===============================================
+getCellInput:
+	mov     rdi, prompt
+	call    printst                         ; display prompt
+
+	call    read_getDigit                   ; get cell number
+	push    rax                             ; save cell number
+	call    readchar                        ; consume LF
+
+	mov     rdi, LF
+	call    printch                         ; display LF
+
+	pop     rax                             ; restore cell number
 	ret
