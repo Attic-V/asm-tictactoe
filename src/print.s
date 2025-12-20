@@ -48,9 +48,6 @@ print:
 ; System V ABI compatible
 ;===============================================
 printst:
-	push    rbp
-	mov     rbp, rsp
-
 	xor     rcx, rcx                        ; set counter to zero
 
 .loop:
@@ -63,6 +60,4 @@ printst:
 	mov     rsi, rcx                        ; pass length to print
 	call    print
 
-	mov     rsp, rbp
-	pop     rbp
 	ret
