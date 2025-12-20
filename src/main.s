@@ -1,9 +1,4 @@
-LF    equ 10
-SPACE equ 32
-
-MARKER_X    equ 'X'
-MARKER_O    equ 'O'
-MARKER_NONE equ '.'
+LF equ 10
 
 section .data
 	x_board dw 0                            ; bitboard for player x
@@ -25,10 +20,15 @@ section .rodata
 		0b100010001, 0b001010100        ; all possible wincons
 	win_state_count equ 8                   ; number of possible wincons
 
+	markerX db 'X'                          ; X marker
+	markerO db 'O'                          ; O marker
+	markerNone db '.'                       ; empty marker
+
 section .text
 	extern printch                          ; print.s
 	extern printst                          ; print.s
 	extern print_writeLf
+	extern print_writeSpace
 	extern readchar                         ; read.s
 	extern read_getDigit
 	global _start                           ; expose _start to the linker
@@ -123,61 +123,46 @@ place_piece:
 
 	ret
 
-; print_board () () - display board to stdout
-; clobber: rcx, r8w, r9w, rax, rdx, rbx, rdi, rsi, r11
+;===============================================
+; void print_board ()
+;-----------------------------------------------
+; Write ASCII drawing of board to stdout.
+;
+; System V ABI compliant.
+;===============================================
 print_board:
-	push    rbp
-	mov     rbp, rsp
-
-	mov     rcx, 9                          ; 9 board cells to loop through
-	mov     r8w, [x_board]                  ; copy x board to r8w
-	mov     r9w, [o_board]                  ; copy o board to r9w
+	mov     ecx, 9                          ; 9 board cells to loop through
+	mov     r8d, [x_board]                  ; copy x board to r8d
+	mov     r9d, [o_board]                  ; copy o board to r9d
 
 .loop:
-	push    rcx                             ; save rcx
-	test    r8w, 0x100                      ; check if x occupies cell
-	jnz     .print_x                        ; jump if true
-	test    r9w, 0x100                      ; check if o occupies cell
-	jnz     .print_o                        ; jump if true
+	mov     edi, [markerNone]               ; default to empty marker
+	test    r8d, 0x100                      ; check if X occupies cell
+	cmovnz  edi, [markerX]                  ; if so then use X marker
+	test    r9d, 0x100                      ; check if O occupies cell
+	cmovnz  edi, [markerO]                  ; if so then use O marker
+	push    rcx
+	call    printch                         ; display marker
+	call    print_writeSpace
+	pop     rcx
 
-	mov     rdi, MARKER_NONE                ; pass empty marker to printch
-	jmp     .next
-
-.print_x:
-	mov     rdi, MARKER_X                   ; pass x marker to printch
-	jmp     .next
-
-.print_o:
-	mov     rdi, MARKER_O                   ; pass o marker to printch
-	jmp     .next
-
-.next:
-	call    printch                         ; print char passed in
-
-	mov     rdi, SPACE
-	call    printch                         ; print space
-
-	pop     rcx                             ; restore rcx
 	xor     rdx, rdx                        ; zero upper half of dividend
-	mov     rax, rcx                        ; copy loop count to rax
-	add     rax, 2                          ; offset loop count by 2
-	mov     rbx, 3                          ; divisor is 3
-	div     rbx                             ; divide rdx:rax by rbx
+	mov     rax, rcx                        ; dividend
+	add     rax, 2                          ; offset dividend by 2
+	mov     r10, 3                          ; divisor is 3
+	div     r10                             ; divide rdx:rax by r10
 	test    rdx, rdx                        ; check if remainder is zero
 	jnz     .to_loop                        ; loop if false
-	push    rcx                             ; save rcx
+	push    rcx
 	call    print_writeLf
-	pop     rcx                             ; restore rcx
+	pop     rcx
 
 .to_loop:
-	shl     r8w, 1                          ; shift temp board left
-	shl     r9w, 1                          ; shift temp board left
+	shl     r8d, 1                          ; shift temp board left
+	shl     r9d, 1                          ; shift temp board left
 
-	dec     cl                              ; decrement counter
-	jnz     .loop                           ; loop .loop if cl > 0
+	loop    .loop
 
-	mov     rsp, rbp
-	pop     rbp
 	ret
 
 ;===============================================

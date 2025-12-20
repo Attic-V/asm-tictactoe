@@ -2,6 +2,7 @@ section .text
 	global printch                          ; expose to linker
 	global printst                          ; expose to linker
 	global print_writeLf
+	global print_writeSpace
 
 ;===============================================
 ; void printch (char c);
@@ -72,5 +73,17 @@ printst:
 ;===============================================
 print_writeLf:
 	mov     rdi, 10
+	call    printch
+	ret
+
+;===============================================
+; void print_writeSpace ()
+;-----------------------------------------------
+; Write space character to stdout.
+;
+; System V ABI compliant.
+;===============================================
+print_writeSpace:
+	mov     rdi, 32
 	call    printch
 	ret
