@@ -106,17 +106,13 @@ main:
 ; the selected cell of the given board. Cell
 ; range is 1-9.
 ;
-; This function is System V ABI compliant.
+; System V ABI compliant.
 ;===============================================
 place_piece:
-	push    rbp
-	mov     rbp, rsp
+	push    rdi                             ; save board address
 
 .loop:
-	push    rdi                             ; save board address
 	call    getCellInput
-	pop     rdi                             ; restore board address
-
 	mov     cl, al                          ; move input to cl
 
 	mov     r10d, 0x100                     ; place in temp board 0 cell
@@ -127,10 +123,9 @@ place_piece:
 	test    eax, r10d                       ; if target cell is occupied
 	jnz     .loop                           ; then try again
 
+	pop     rdi                             ; restore board address
 	or      [rdi], r10d                     ; place piece in cell on board
 
-	mov     rsp, rbp
-	pop     rbp
 	ret
 
 ; print_board () () - display board to stdout
