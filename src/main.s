@@ -130,15 +130,15 @@ place_piece:
 	mov     cl, al                          ; move input char to cl
 	dec     cl                              ; target 1 is cell 0
 
-	mov     r10w, 0x100                     ; place in temp board 0 cell
-	shr     r10w, cl                        ; shift to correct cell
+	mov     r10d, 0x100                     ; place in temp board 0 cell
+	shr     r10d, cl                        ; shift to correct cell
 
-	mov     ax, [x_board]                   ; move x board to ax
-	or      ax, [o_board]                   ; or o board with x board in ax
-	test    ax, r10w                        ; if target cell is occupied
+	mov     eax, [x_board]                  ; move x board to ax
+	or      eax, [o_board]                  ; or o board with x board in ax
+	test    eax, r10d                       ; if target cell is occupied
 	jnz     .loop                           ; then try again
 
-	or      [rdi], r10w                     ; place piece in cell on board
+	or      [rdi], r10d                     ; place piece in cell on board
 
 	mov     rsp, rbp
 	pop     rbp
