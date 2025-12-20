@@ -106,7 +106,7 @@ main:
 ; the selected cell of the given board. Cell
 ; range is 1-9.
 ;
-; System V ABI compliant.
+; This function is not System V ABI compliant.
 ;===============================================
 place_piece:
 	push    rbp
