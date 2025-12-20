@@ -1,6 +1,7 @@
 section .text
 	global printch                          ; expose to linker
 	global printst                          ; expose to linker
+	global print_writeLf
 
 ;===============================================
 ; void printch (char c);
@@ -60,4 +61,16 @@ printst:
 	mov     rsi, rcx                        ; pass length to print
 	call    print
 
+	ret
+
+;===============================================
+; void print_writeLf ()
+;-----------------------------------------------
+; Write line feed to stdout.
+;
+; System V ABI compliant.
+;===============================================
+print_writeLf:
+	mov     rdi, 10
+	call    printch
 	ret
