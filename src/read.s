@@ -1,5 +1,6 @@
 section .text
 	global readchar                         ; expose to linker
+	global read_getDigit
 
 ;===============================================
 ; char readchar ();
@@ -23,4 +24,18 @@ readchar:
 
 	mov     rsp, rbp
 	pop     rbp
+	ret
+
+;===============================================
+; int read_getDigit ();
+;-----------------------------------------------
+; Read a character from stdin and convert it to
+; a digit. Returns the digit as an int.
+;
+; This function is System V ABI compliant.
+;===============================================
+read_getDigit:
+	call    readchar
+	sub     al, '0'
+
 	ret

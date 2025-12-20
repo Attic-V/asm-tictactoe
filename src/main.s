@@ -29,6 +29,7 @@ section .text
 	extern printch                          ; print.s
 	extern printst                          ; print.s
 	extern readchar                         ; read.s
+	extern read_getDigit
 	global _start                           ; expose _start to the linker
 
 _start:
@@ -116,18 +117,17 @@ place_piece:
 	mov     rdi, prompt                     ; pass to printst
 	call    printst
 
-	call    readchar                        ; get desired cell number
-	push    rax                             ; save input char
+	call    read_getDigit                   ; get desired cell number
+	push    rax                             ; save input digit
 	call    readchar                        ; consume newline
 
 	mov     rdi, LF
 	call    printch
 
-	pop     rax                             ; restore input char
+	pop     rax                             ; restore input digit
 	pop     rdi                             ; restore board address
 
 	mov     cl, al                          ; move input char to cl
-	sub     cl, '0'                         ; convert digit char to int
 	dec     cl                              ; target 1 is cell 0
 
 	mov     r12w, 0x100                     ; place in temp board 0 cell
