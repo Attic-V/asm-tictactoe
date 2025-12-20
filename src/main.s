@@ -106,7 +106,7 @@ main:
 ; the selected cell of the given board. Cell
 ; range is 1-9.
 ;
-; This function is not System V ABI compliant.
+; This function is System V ABI compliant.
 ;===============================================
 place_piece:
 	push    rbp
@@ -130,15 +130,15 @@ place_piece:
 	mov     cl, al                          ; move input char to cl
 	dec     cl                              ; target 1 is cell 0
 
-	mov     r12w, 0x100                     ; place in temp board 0 cell
-	shr     r12w, cl                        ; shift to correct cell
+	mov     r10w, 0x100                     ; place in temp board 0 cell
+	shr     r10w, cl                        ; shift to correct cell
 
 	mov     ax, [x_board]                   ; move x board to ax
 	or      ax, [o_board]                   ; or o board with x board in ax
-	test    ax, r12w                        ; if target cell is occupied
+	test    ax, r10w                        ; if target cell is occupied
 	jnz     .loop                           ; then try again
 
-	or      [rdi], r12w                     ; place piece in cell on board
+	or      [rdi], r10w                     ; place piece in cell on board
 
 	mov     rsp, rbp
 	pop     rbp
