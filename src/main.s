@@ -127,10 +127,6 @@ place_piece:
 	pop     rdi                             ; restore board address
 
 	mov     cl, al                          ; move input char to cl
-	cmp     cl, '1'                         ; if target cell < 1
-	jl      .loop                           ; then try again
-	cmp     cl, '9'                         ; if target cell > 9
-	jg      .loop                           ; then try again
 	sub     cl, '0'                         ; convert digit char to int
 	dec     cl                              ; target 1 is cell 0
 
