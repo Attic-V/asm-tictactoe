@@ -46,7 +46,7 @@ main:
 
 .x:
 	push    rcx                             ; save rcx
-	lea     r14, [x_board]                  ; pass x board to place_piece
+	lea     rdi, [x_board]                  ; pass x board to place_piece
 	call    place_piece                     ; place piece in x board
 	call    print_board                     ; display board
 
@@ -64,7 +64,7 @@ main:
 
 .o:
 	push    rcx                             ; save rcx
-	lea     r14, [o_board]                  ; pass o board to place_piece
+	lea     rdi, [o_board]                  ; pass o board to place_piece
 	call    place_piece                     ; place piece in o board
 	call    print_board                     ; display board
 
@@ -98,13 +98,21 @@ main:
 	pop     rbp
 	ret
 
-; place_piece (r14) () - place piece on board
-; r14: board address
+;===============================================
+; void place_piece (int *board)
+;-----------------------------------------------
+; Read input from stdin and place a piece in
+; the selected cell of the given board. Cell
+; range is 1-9.
+;
+; System V ABI compliant.
+;===============================================
 place_piece:
 	push    rbp
 	mov     rbp, rsp
 
 .loop:
+	push    rdi                             ; save board address
 	mov     rdi, prompt                     ; pass to printst
 	call    printst
 
@@ -116,6 +124,7 @@ place_piece:
 	call    printch
 
 	pop     rax                             ; restore input char
+	pop     rdi                             ; restore board address
 
 	mov     cl, al                          ; move input char to cl
 	cmp     cl, '1'                         ; if target cell < 1
@@ -133,7 +142,7 @@ place_piece:
 	test    ax, r12w                        ; if target cell is occupied
 	jnz     .loop                           ; then try again
 
-	or      [r14], r12w                     ; place piece in cell on board
+	or      [rdi], r12w                     ; place piece in cell on board
 
 	mov     rsp, rbp
 	pop     rbp
