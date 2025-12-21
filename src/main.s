@@ -97,9 +97,6 @@ place_piece:
 .loop:
 	call    getUserInput
 	mov     ecx, eax                        ; cell index in ecx
-	mov     edx, 8
-	sub     edx, ecx
-	mov     ecx, edx
 
 	mov     eax, [x_board]                  ; track x occupancy
 	or      eax, [o_board]                  ; track o occupancy
@@ -124,9 +121,9 @@ print_board:
 
 .loop:
 	mov     edi, [markerNone]               ; default to empty marker
-	test    r8d, 0x100                      ; check if X occupies cell
+	test    r8d, 1                          ; check if X occupies cell
 	cmovnz  edi, [markerX]                  ; if so then use X marker
-	test    r9d, 0x100                      ; check if O occupies cell
+	test    r9d, 1                          ; check if O occupies cell
 	cmovnz  edi, [markerO]                  ; if so then use O marker
 	push    rcx
 	call    write_printChar                 ; display marker
@@ -145,8 +142,8 @@ print_board:
 	pop     rcx
 
 .to_loop:
-	shl     r8d, 1                          ; shift temp board left
-	shl     r9d, 1                          ; shift temp board left
+	shr     r8d, 1                          ; shift temp board right
+	shr     r9d, 1                          ; shift temp board right
 
 	loop    .loop
 
