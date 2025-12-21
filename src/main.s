@@ -29,8 +29,8 @@ section .text
 	extern printst                          ; print.s
 	extern print_writeLf
 	extern print_writeSpace
-	extern readchar                         ; read.s
 	extern read_getDigit
+	extern read_getChar
 	global _start                           ; expose _start to the linker
 
 _start:
@@ -207,7 +207,7 @@ getCellInput:
 	call    read_getDigit                   ; get cell number
 	dec     rax                             ; map 1-9 to 0-8
 	push    rax                             ; save cell number
-	call    readchar                        ; consume LF
+	call    read_getChar                    ; consume LF
 	call    print_writeLf
 	pop     rax                             ; restore cell number
 

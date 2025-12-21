@@ -1,26 +1,24 @@
 section .text
-	global readchar                         ; expose to linker
 	global read_getDigit
+	global read_getChar
 
 ;===============================================
-; char readchar ();
+; char read_getChar ();
 ;-----------------------------------------------
-; read character from stdin
+; Read a character from stdin and return it.
 ;===============================================
-readchar:
-	push    rbp
-	mov     rbp, rsp
-	sub     rsp, 16                         ; reserve 16 bytes
+read_getChar:
+	sub         rsp, 8
 
-	mov     rax, 0                          ; read
-	mov     rdi, 0                          ; from stdin
-	mov     rsi, rsp                        ; to local buffer at rsp
-	mov     rdx, 1                          ; 1 character
+	mov         rax, 0
+	mov         rdi, 0
+	mov         rsi, rsp
+	mov         rdx, 1
 	syscall
 
-	mov     rax, [rsp]                      ; load character into rax
+	movzx       eax, byte [rsp]
 
-	leave
+	add         rsp, 8
 	ret
 
 ;===============================================
@@ -33,7 +31,7 @@ read_getDigit:
 	push    rbp
 	mov     rbp, rsp
 
-	call    readchar
+	call    read_getChar
 	sub     al, '0'
 
 	leave
