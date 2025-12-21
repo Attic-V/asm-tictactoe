@@ -24,20 +24,6 @@ printch:
 	ret
 
 ;===============================================
-; void print (char *buf, int len);
-;-----------------------------------------------
-; write buffer to stdout
-;===============================================
-print:
-	mov     rdx, rsi                        ; length
-	mov     rsi, rdi                        ; address
-	mov     rax, 1                          ; write
-	mov     rdi, 1                          ; stdout
-	syscall
-
-	ret
-
-;===============================================
 ; void printst (char *buf);
 ;-----------------------------------------------
 ; write null-terminated buffer to stdout
@@ -81,4 +67,18 @@ print_writeSpace:
 	sub     rsp, 8                          ; stack alignment
 	call    printch
 	add     rsp, 8                          ; stack alignment
+	ret
+
+;===============================================
+; void print (char *buf, int len);
+;-----------------------------------------------
+; Write a buffer with a given length to stdout.
+;===============================================
+print:
+	mov         rdx, rsi
+	mov         rsi, rdi
+	mov         rax, 1
+	mov         rdi, 1
+	syscall
+
 	ret
