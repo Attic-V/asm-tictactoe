@@ -27,8 +27,8 @@ section .rodata
 section .text
 	extern printst                          ; print.s
 	extern print_writeLf
-	extern print_writeSpace
 	extern write_printChar
+	extern write_printSpace
 	extern read_getDigit
 	extern read_getChar
 	global _start                           ; expose _start to the linker
@@ -139,7 +139,7 @@ print_board:
 	cmovnz  edi, [markerO]                  ; if so then use O marker
 	push    rcx
 	call    write_printChar                 ; display marker
-	call    print_writeSpace
+	call    write_printSpace
 	pop     rcx
 
 	xor     rdx, rdx                        ; zero upper half of dividend
