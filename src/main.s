@@ -11,13 +11,6 @@ section .rodata
 	drawmsg db "The game has ended ", \
 		"in a draw.", LF, 0             ; draw message
 
-	win_states dw \
-		0b111000000, 0b000111000, \
-		0b000000111, 0b100100100, \
-		0b010010010, 0b001001001, \
-		0b100010001, 0b001010100        ; all possible wincons
-	win_state_count equ 8                   ; number of possible wincons
-
 	markerX db 'X'                          ; X marker
 	markerO db 'O'                          ; O marker
 	markerNone db '.'                       ; empty marker
@@ -51,7 +44,7 @@ main:
 	call    print_board                     ; display board
 	call    write_printLf
 	mov     rdi, [x_board]                  ; pass x_board to check_win
-	call    check_win                       ; check_win x_board
+	call    checkWin                        ; checkWin x_board
 	pop     rcx                             ; restore rcx
 	cmp     rax, 1                          ; if x won
 	je      .win_x                          ; then jump .win_x
@@ -66,7 +59,7 @@ main:
 	call    print_board                     ; display board
 	call    write_printLf
 	mov     rdi, [o_board]                  ; pass o_board to check_win
-	call    check_win                       ; check_win o_board
+	call    checkWin                        ; checkWin o_board
 	pop     rcx                             ; restore rcx
 	cmp     rax, 1                          ; if o won
 	je      .win_o                          ; then jump .win_o
@@ -160,32 +153,36 @@ print_board:
 	ret
 
 ;===============================================
-; int check_win (int boardstate)
+; int checkWin (int boardstate);
 ;-----------------------------------------------
-; Checks whether the given board state contains
-; a win condition.
+; Check whether the given boardstate contains a
+; win condition.
 ;
-; Returns 1 if the a win condition exists and 0
+; Return 1 if a win condition is present and 0
 ; otherwise.
 ;===============================================
-check_win:
-	mov     rsi, win_states                 ; save win state array to rsi
-	mov     rcx, win_state_count            ; save win state count to rcx
+checkWin:
+	mov         ecx, 8
 
 .loop:
-	mov     r8w, [rsi + 2*rcx - 2]          ; load mask
-	mov     r9w, r8w                        ; copy mask
-	and     r9w, di                         ; apply board to mask
-	cmp     r8w, r9w                        ; check if union matches mask
-	je      .match                          ; exit if they do match
+	mov         si, [winStates + ecx*2 - 2]
+	mov         dx, si
+	and         dx, di
+	cmp         dx, si
+	je          .match
 
-	loop    .loop
-	mov     rax, 0                          ; wincon not found
+	loop        .loop
+	xor         eax, eax
 	ret
 
 .match:
-	mov     rax, 1                          ; wincon found
+	mov         eax, 1
 	ret
+
+winStates dw \
+	0b111000000, 0b000111000, 0b000000111, \
+	0b100100100, 0b010010010, 0b001001001, \
+	0b100010001, 0b001010100
 
 ;===============================================
 ; int getUserInput ();
