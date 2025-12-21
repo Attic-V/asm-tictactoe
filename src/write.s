@@ -1,8 +1,8 @@
 section .text
 	global printst                          ; expose to linker
-	global print_writeLf
 	global write_printChar
 	global write_printSpace
+	global write_printLf
 
 ;===============================================
 ; void printst (char *buf);
@@ -24,18 +24,6 @@ printst:
 	call    print
 	add     rsp, 8                          ; stack alignment
 
-	ret
-
-;===============================================
-; void print_writeLf ()
-;-----------------------------------------------
-; Write line feed to stdout.
-;===============================================
-print_writeLf:
-	mov     rdi, 10
-	sub     rsp, 8                          ; stack alignment
-	call    write_printChar
-	add     rsp, 8                          ; stack alignment
 	ret
 
 ;===============================================
@@ -64,6 +52,20 @@ write_printSpace:
 	sub         rsp, 8
 
 	mov         rdi, 32
+	call        write_printChar
+
+	add         rsp, 8
+	ret
+
+;===============================================
+; void write_printLf ();
+;-----------------------------------------------
+; Write a line feed character to stdout.
+;===============================================
+write_printLf:
+	sub         rsp, 8
+
+	mov         rdi, 10
 	call        write_printChar
 
 	add         rsp, 8

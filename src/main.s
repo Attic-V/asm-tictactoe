@@ -26,9 +26,9 @@ section .rodata
 
 section .text
 	extern printst                          ; print.s
-	extern print_writeLf
 	extern write_printChar
 	extern write_printSpace
+	extern write_printLf
 	extern read_getDigit
 	extern read_getChar
 	global _start                           ; expose _start to the linker
@@ -51,7 +51,7 @@ main:
 	lea     rdi, [x_board]                  ; pass x board to place_piece
 	call    place_piece                     ; place piece in x board
 	call    print_board                     ; display board
-	call    print_writeLf
+	call    write_printLf
 	mov     rdi, [x_board]                  ; pass x_board to check_win
 	call    check_win                       ; check_win x_board
 	pop     rcx                             ; restore rcx
@@ -66,7 +66,7 @@ main:
 	lea     rdi, [o_board]                  ; pass o board to place_piece
 	call    place_piece                     ; place piece in o board
 	call    print_board                     ; display board
-	call    print_writeLf
+	call    write_printLf
 	mov     rdi, [o_board]                  ; pass o_board to check_win
 	call    check_win                       ; check_win o_board
 	pop     rcx                             ; restore rcx
@@ -150,7 +150,7 @@ print_board:
 	test    rdx, rdx                        ; check if remainder is zero
 	jnz     .to_loop                        ; loop if false
 	push    rcx
-	call    print_writeLf
+	call    write_printLf
 	pop     rcx
 
 .to_loop:
@@ -208,7 +208,7 @@ getCellInput:
 	dec     rax                             ; map 1-9 to 0-8
 	push    rax                             ; save cell number
 	call    read_getChar                    ; consume LF
-	call    print_writeLf
+	call    write_printLf
 	pop     rax                             ; restore cell number
 
 	leave
