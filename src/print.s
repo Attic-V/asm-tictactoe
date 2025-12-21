@@ -8,8 +8,6 @@ section .text
 ; void printch (char c);
 ;-----------------------------------------------
 ; write character to stdout
-;
-; System V ABI compatible
 ;===============================================
 printch:
 	push    rbp
@@ -29,8 +27,6 @@ printch:
 ; void print (char *buf, int len);
 ;-----------------------------------------------
 ; write buffer to stdout
-;
-; System V ABI compatible
 ;===============================================
 print:
 	mov     rdx, rsi                        ; length
@@ -45,8 +41,6 @@ print:
 ; void printst (char *buf);
 ;-----------------------------------------------
 ; write null-terminated buffer to stdout
-;
-; System V ABI compatible
 ;===============================================
 printst:
 	xor     rcx, rcx                        ; set counter to zero
@@ -69,8 +63,6 @@ printst:
 ; void print_writeLf ()
 ;-----------------------------------------------
 ; Write line feed to stdout.
-;
-; System V ABI compliant.
 ;===============================================
 print_writeLf:
 	mov     rdi, 10
@@ -83,8 +75,6 @@ print_writeLf:
 ; void print_writeSpace ()
 ;-----------------------------------------------
 ; Write space character to stdout.
-;
-; System V ABI compliant.
 ;===============================================
 print_writeSpace:
 	mov     rdi, 32

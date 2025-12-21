@@ -6,8 +6,6 @@ section .text
 ; char readchar ();
 ;-----------------------------------------------
 ; read character from stdin
-;
-; System V ABI compatible
 ;===============================================
 readchar:
 	push    rbp
@@ -30,8 +28,6 @@ readchar:
 ;-----------------------------------------------
 ; Read a character from stdin and convert it to
 ; a digit. Returns the digit as an int.
-;
-; This function is System V ABI compliant.
 ;===============================================
 read_getDigit:
 	push    rbp

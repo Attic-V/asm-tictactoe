@@ -99,8 +99,6 @@ main:
 ; Read input from stdin and place a piece in
 ; the selected cell of the given board. Cell
 ; range is 1-9.
-;
-; System V ABI compliant.
 ;===============================================
 place_piece:
 	push    rdi                             ; save board address
@@ -127,8 +125,6 @@ place_piece:
 ; void print_board ()
 ;-----------------------------------------------
 ; Write ASCII drawing of board to stdout.
-;
-; System V ABI compliant.
 ;===============================================
 print_board:
 	mov     ecx, 9                          ; 9 board cells to loop through
@@ -173,8 +169,6 @@ print_board:
 ;
 ; Returns 1 if the a win condition exists and 0
 ; otherwise.
-;
-; System V ABI compatible
 ;===============================================
 check_win:
 	mov     rsi, win_states                 ; save win state array to rsi
@@ -202,8 +196,6 @@ check_win:
 ; and returns the cell number as an int. The
 ; input taken will be of the range 1-9 and the
 ; cell number returned will be of 0-8.
-;
-; This function is System V ABI compliant.
 ;===============================================
 getCellInput:
 	push    rbp
