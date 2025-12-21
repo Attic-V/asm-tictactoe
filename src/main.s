@@ -11,10 +11,6 @@ section .rodata
 	drawmsg db "The game has ended ", \
 		"in a draw.", LF, 0             ; draw message
 
-	markerX db 'X'                          ; X marker
-	markerO db 'O'                          ; O marker
-	markerNone db '.'                       ; empty marker
-
 section .text
 	extern write_printChar
 	extern write_printSpace
@@ -110,44 +106,39 @@ place_piece:
 	ret
 
 ;===============================================
-; void print_board ()
+; void displayBoard ();
 ;-----------------------------------------------
-; Write ASCII drawing of board to stdout.
+; Write ASCII drawing of full board to stdout.
 ;===============================================
 print_board:
-	mov     ecx, 9                          ; 9 board cells to loop through
-	mov     r8d, [x_board]                  ; copy x board to r8d
-	mov     r9d, [o_board]                  ; copy o board to r9d
+	push        rbx
+
+	mov         ebx, 1
 
 .loop:
-	mov     edi, [markerNone]               ; default to empty marker
-	test    r8d, 1                          ; check if X occupies cell
-	cmovnz  edi, [markerX]                  ; if so then use X marker
-	test    r9d, 1                          ; check if O occupies cell
-	cmovnz  edi, [markerO]                  ; if so then use O marker
-	push    rcx
-	call    write_printChar                 ; display marker
-	call    write_printSpace
-	pop     rcx
+	mov         di, [markerNone]
+	test        bx, [x_board]
+	cmovnz      di, [markerX]
+	test        bx, [o_board]
+	cmovnz      di, [markerO]
+	call        write_printChar
+	call        write_printSpace
 
-	xor     rdx, rdx                        ; zero upper half of dividend
-	mov     rax, rcx                        ; dividend
-	add     rax, 2                          ; offset dividend by 2
-	mov     r10, 3                          ; divisor is 3
-	div     r10                             ; divide rdx:rax by r10
-	test    rdx, rdx                        ; check if remainder is zero
-	jnz     .to_loop                        ; loop if false
-	push    rcx
-	call    write_printLf
-	pop     rcx
+	test        ebx, 0x124
+	jz          .skipLf
+	call        write_printLf
 
-.to_loop:
-	shr     r8d, 1                          ; shift temp board right
-	shr     r9d, 1                          ; shift temp board right
+.skipLf:
+	shl         ebx, 1
+	test        ebx, 0x200
+	jz          .loop
 
-	loop    .loop
-
+	pop         rbx
 	ret
+
+markerX db 'X'
+markerO db 'O'
+markerNone db '.'
 
 ;===============================================
 ; int checkWin (int boardstate);
