@@ -25,10 +25,10 @@ section .rodata
 	markerNone db '.'                       ; empty marker
 
 section .text
-	extern printch                          ; print.s
 	extern printst                          ; print.s
 	extern print_writeLf
 	extern print_writeSpace
+	extern write_printChar
 	extern read_getDigit
 	extern read_getChar
 	global _start                           ; expose _start to the linker
@@ -138,7 +138,7 @@ print_board:
 	test    r9d, 0x100                      ; check if O occupies cell
 	cmovnz  edi, [markerO]                  ; if so then use O marker
 	push    rcx
-	call    printch                         ; display marker
+	call    write_printChar                 ; display marker
 	call    print_writeSpace
 	pop     rcx
 

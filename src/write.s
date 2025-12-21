@@ -1,27 +1,8 @@
 section .text
-	global printch                          ; expose to linker
 	global printst                          ; expose to linker
 	global print_writeLf
 	global print_writeSpace
-
-;===============================================
-; void printch (char c);
-;-----------------------------------------------
-; write character to stdout
-;===============================================
-printch:
-	push    rbp
-	mov     rbp, rsp
-	sub     rsp, 16                         ; reserve space on stack
-
-	mov     [rsp], dil                      ; move character to buffer
-
-	mov     rdi, rsp                        ; pass buffer to print
-	mov     rsi, 1                          ; pass length 1 to print
-	call    print
-
-	leave
-	ret
+	global write_printChar
 
 ;===============================================
 ; void printst (char *buf);
@@ -53,7 +34,7 @@ printst:
 print_writeLf:
 	mov     rdi, 10
 	sub     rsp, 8                          ; stack alignment
-	call    printch
+	call    write_printChar
 	add     rsp, 8                          ; stack alignment
 	ret
 
@@ -65,8 +46,25 @@ print_writeLf:
 print_writeSpace:
 	mov     rdi, 32
 	sub     rsp, 8                          ; stack alignment
-	call    printch
+	call    write_printChar
 	add     rsp, 8                          ; stack alignment
+	ret
+
+;===============================================
+; void write_printChar (char c);
+;-----------------------------------------------
+; Write a character to stdout.
+;===============================================
+write_printChar:
+	sub         rsp, 8
+
+	mov         [rsp], dil
+
+	mov         rdi, rsp
+	mov         rsi, 1
+	call        print
+
+	add         rsp, 8
 	ret
 
 ;===============================================
