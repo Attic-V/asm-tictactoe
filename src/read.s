@@ -1,6 +1,6 @@
 section .text
-	global read_getDigit
 	global read_getChar
+	global read_getDigit
 
 ;===============================================
 ; char read_getChar ();
@@ -24,15 +24,14 @@ read_getChar:
 ;===============================================
 ; int read_getDigit ();
 ;-----------------------------------------------
-; Read a character from stdin and convert it to
-; a digit. Returns the digit as an int.
+; Read a character from stdin, convert it to an
+; int, and return it.
 ;===============================================
 read_getDigit:
-	push    rbp
-	mov     rbp, rsp
+	sub         rsp, 8
 
-	call    read_getChar
-	sub     al, '0'
+	call        read_getChar
+	sub         al, '0'
 
-	leave
+	add         rsp, 8
 	ret
