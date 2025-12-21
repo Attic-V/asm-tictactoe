@@ -1,4 +1,5 @@
 section .text
+	extern string_len
 	global printst                          ; expose to linker
 	global write_printChar
 	global write_printSpace
@@ -10,20 +11,17 @@ section .text
 ; write null-terminated buffer to stdout
 ;===============================================
 printst:
-	xor     rcx, rcx                        ; set counter to zero
+	push    rbp
+	mov     rbp, rsp
 
-.loop:
-	cmp     byte [rdi + rcx], 0             ; check for null byte
-	je      .done                           ; if found then break
-	inc     rcx                             ; else increment counter
-	jmp     .loop
+	mov     rbx, rdi
+	call    string_len
 
-.done:
-	mov     rsi, rcx                        ; pass length to print
-	sub     rsp, 8                          ; stack alignment
+	mov     rsi, rax
+	mov     rdi, rbx
 	call    print
-	add     rsp, 8                          ; stack alignment
 
+	leave
 	ret
 
 ;===============================================
