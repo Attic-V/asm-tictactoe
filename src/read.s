@@ -22,8 +22,7 @@ readchar:
 
 	mov     rax, [rsp]                      ; load character into rax
 
-	mov     rsp, rbp
-	pop     rbp
+	leave
 	ret
 
 ;===============================================
@@ -35,7 +34,11 @@ readchar:
 ; This function is System V ABI compliant.
 ;===============================================
 read_getDigit:
+	push    rbp
+	mov     rbp, rsp
+
 	call    readchar
 	sub     al, '0'
 
+	leave
 	ret

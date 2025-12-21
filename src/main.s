@@ -90,8 +90,7 @@ main:
 .end:
 	call    printst
 
-	mov     rsp, rbp
-	pop     rbp
+	leave
 	ret
 
 ;===============================================
@@ -108,18 +107,19 @@ place_piece:
 
 .loop:
 	call    getCellInput
-	mov     cl, al                          ; move input to cl
+	mov     ecx, eax                        ; cell index in ecx
+	mov     edx, 8
+	sub     edx, ecx
+	mov     ecx, edx
 
-	mov     r10d, 0x100                     ; place in temp board 0 cell
-	shr     r10d, cl                        ; shift to correct cell
+	mov     eax, [x_board]                  ; track x occupancy
+	or      eax, [o_board]                  ; track o occupancy
 
-	mov     eax, [x_board]                  ; move x board to ax
-	or      eax, [o_board]                  ; or o board with x board in ax
-	test    eax, r10d                       ; if target cell is occupied
-	jnz     .loop                           ; then try again
+	bt      eax, ecx                        ; check if cell is occupied
+	jc      .loop                           ; if so then retry
 
 	pop     rdi                             ; restore board address
-	or      [rdi], r10d                     ; place piece in cell on board
+	bts     [rdi], ecx                      ; occupy cell in board
 
 	ret
 
@@ -206,6 +206,9 @@ check_win:
 ; This function is System V ABI compliant.
 ;===============================================
 getCellInput:
+	push    rbp
+	mov     rbp, rsp
+
 	mov     rdi, prompt
 	call    printst                         ; display prompt
 
@@ -215,4 +218,6 @@ getCellInput:
 	call    readchar                        ; consume LF
 	call    print_writeLf
 	pop     rax                             ; restore cell number
+
+	leave
 	ret

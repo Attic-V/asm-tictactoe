@@ -22,8 +22,7 @@ printch:
 	mov     rsi, 1                          ; pass length 1 to print
 	call    print
 
-	mov     rsp, rbp
-	pop     rbp
+	leave
 	ret
 
 ;===============================================
@@ -60,7 +59,9 @@ printst:
 
 .done:
 	mov     rsi, rcx                        ; pass length to print
+	sub     rsp, 8                          ; stack alignment
 	call    print
+	add     rsp, 8                          ; stack alignment
 
 	ret
 
@@ -73,7 +74,9 @@ printst:
 ;===============================================
 print_writeLf:
 	mov     rdi, 10
+	sub     rsp, 8                          ; stack alignment
 	call    printch
+	add     rsp, 8                          ; stack alignment
 	ret
 
 ;===============================================
@@ -85,5 +88,7 @@ print_writeLf:
 ;===============================================
 print_writeSpace:
 	mov     rdi, 32
+	sub     rsp, 8                          ; stack alignment
 	call    printch
+	add     rsp, 8                          ; stack alignment
 	ret
