@@ -25,10 +25,10 @@ section .rodata
 	markerNone db '.'                       ; empty marker
 
 section .text
-	extern printst                          ; print.s
 	extern write_printChar
 	extern write_printSpace
 	extern write_printLf
+	extern write_printStr
 	extern read_getDigit
 	extern read_getChar
 	global _start                           ; expose _start to the linker
@@ -88,7 +88,7 @@ main:
 	jmp     .end
 
 .end:
-	call    printst
+	call    write_printStr
 
 	leave
 	ret
@@ -202,7 +202,7 @@ getCellInput:
 	mov     rbp, rsp
 
 	mov     rdi, prompt
-	call    printst                         ; display prompt
+	call    write_printStr                  ; display prompt
 
 	call    read_getDigit                   ; get cell number
 	dec     rax                             ; map 1-9 to 0-8

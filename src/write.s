@@ -1,28 +1,9 @@
 section .text
 	extern string_len
-	global printst                          ; expose to linker
 	global write_printChar
 	global write_printSpace
 	global write_printLf
-
-;===============================================
-; void printst (char *buf);
-;-----------------------------------------------
-; write null-terminated buffer to stdout
-;===============================================
-printst:
-	push    rbp
-	mov     rbp, rsp
-
-	mov     rbx, rdi
-	call    string_len
-
-	mov     rsi, rax
-	mov     rdi, rbx
-	call    print
-
-	leave
-	ret
+	global write_printStr
 
 ;===============================================
 ; void write_printChar (char c);
@@ -67,6 +48,24 @@ write_printLf:
 	call        write_printChar
 
 	add         rsp, 8
+	ret
+
+;===============================================
+; void write_printStr (char *buf);
+;-----------------------------------------------
+; Write a null-terminated buffer to stdout.
+;===============================================
+write_printStr:
+	push        rbx
+
+	mov         rbx, rdi
+	call        string_len
+
+	mov         rdi, rbx
+	mov         rsi, rax
+	call        print
+
+	pop         rbx
 	ret
 
 ;===============================================
