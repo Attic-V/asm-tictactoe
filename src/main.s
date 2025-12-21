@@ -5,8 +5,6 @@ section .data
 	o_board dw 0                            ; bitboard for player o
 
 section .rodata
-	prompt db "enter position [1-9]: ", 0   ; move prompt string
-
 	winmsg_x db "X wins!", LF, 0            ; win message for x
 	winmsg_o db "O wins!", LF, 0            ; win message for o
 
@@ -104,7 +102,7 @@ place_piece:
 	push    rdi                             ; save board address
 
 .loop:
-	call    getCellInput
+	call    getUserInput
 	mov     ecx, eax                        ; cell index in ecx
 	mov     edx, 8
 	sub     edx, ecx
@@ -190,26 +188,28 @@ check_win:
 	ret
 
 ;===============================================
-; int getCellInput ()
+; int getUserInput ();
 ;-----------------------------------------------
-; Reads a cell number and line feed from stdin
-; and returns the cell number as an int. The
-; input taken will be of the range 1-9 and the
-; cell number returned will be of 0-8.
+; Get user input from stdin. Return their
+; selected cell number as an int in the range
+; 0-8. Consume the line feed following their
+; selection.
 ;===============================================
-getCellInput:
-	push    rbp
-	mov     rbp, rsp
+getUserInput:
+	push        rbx
 
-	mov     rdi, prompt
-	call    write_printStr                  ; display prompt
+	mov         rdi, prompt
+	call        write_printStr
 
-	call    read_getDigit                   ; get cell number
-	dec     rax                             ; map 1-9 to 0-8
-	push    rax                             ; save cell number
-	call    read_getChar                    ; consume LF
-	call    write_printLf
-	pop     rax                             ; restore cell number
+	call        read_getDigit
+	dec         rax
+	mov         rbx, rax
 
-	leave
+	call        read_getChar
+	call        write_printLf
+
+	mov         rax, rbx
+	pop         rbx
 	ret
+
+prompt: db "Enter position [1-9]: ", 0
