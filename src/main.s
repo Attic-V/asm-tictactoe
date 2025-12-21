@@ -81,28 +81,28 @@ main:
 	ret
 
 ;===============================================
-; void place_piece (int *board)
+; void placePiece (int *board);
 ;-----------------------------------------------
-; Read input from stdin and place a piece in
-; the selected cell of the given board. Cell
-; range is 1-9.
+; Read input from stdin and place a marker in
+; the selected cell of the given board.
 ;===============================================
 place_piece:
-	push    rdi                             ; save board address
+	push        rbx
+
+	mov         rbx, rdi
 
 .loop:
-	call    getUserInput
-	mov     ecx, eax                        ; cell index in ecx
+	call        getUserInput
 
-	mov     eax, [x_board]                  ; track x occupancy
-	or      eax, [o_board]                  ; track o occupancy
+	movzx       ecx, word [x_board]
+	or          cx, [o_board]
 
-	bt      eax, ecx                        ; check if cell is occupied
-	jc      .loop                           ; if so then retry
+	bt          cx, ax
+	jc          .loop
 
-	pop     rdi                             ; restore board address
-	bts     [rdi], ecx                      ; occupy cell in board
+	bts         [rbx], ax
 
+	pop         rbx
 	ret
 
 ;===============================================
