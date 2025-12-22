@@ -174,6 +174,13 @@ winStates dw \
 getUserInput:
 	push        rbx
 
+	jmp         .input
+
+.retry:
+	mov         rdi, failmsg
+	call        write_printStr
+
+.input:
 	mov         rdi, prompt
 	call        write_printStr
 
@@ -183,8 +190,15 @@ getUserInput:
 	call        read_getChar
 	call        write_printLf
 
+	cmp         rbx, 0
+	jl          .retry
+	cmp         rbx, 8
+	jg          .retry
+
 	mov         rax, rbx
 	pop         rbx
 	ret
 
 prompt db "Enter position [1-9]: ", 0
+failmsg db "Input is not in valid range. ", \
+	"Please try again.", 10, 0
