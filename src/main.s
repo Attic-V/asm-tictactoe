@@ -51,10 +51,10 @@ main:
 	jnz         .turn
 
 .end:
-	mov         rcx, winmsg_x
-	mov         rdx, winmsg_o
+	mov         rcx, .winmsg_x
+	mov         rdx, .winmsg_o
 
-	mov         rdi, drawmsg
+	mov         rdi, .drawmsg
 	cmp         rbp, x_board
 	cmove       rdi, rcx
 	cmp         rbp, o_board
@@ -66,9 +66,9 @@ main:
 	add         rsp, 8
 	ret
 
-winmsg_x db "X wins!", 10, 0
-winmsg_o db "O wins!", 10, 0
-drawmsg db "Match drawn.", 10, 0
+.winmsg_x db "X wins!", 10, 0
+.winmsg_o db "O wins!", 10, 0
+.drawmsg db "Match drawn.", 10, 0
 
 ;===============================================
 ; void placePiece (int *board);
@@ -106,11 +106,11 @@ print_board:
 	mov         ebx, 1
 
 .loop:
-	mov         di, [markerNone]
+	mov         di, [.markerNone]
 	test        bx, [x_board]
-	cmovnz      di, [markerX]
+	cmovnz      di, [.markerX]
 	test        bx, [o_board]
-	cmovnz      di, [markerO]
+	cmovnz      di, [.markerO]
 	call        write_printChar
 	call        write_printSpace
 
@@ -126,9 +126,9 @@ print_board:
 	pop         rbx
 	ret
 
-markerX db 'X'
-markerO db 'O'
-markerNone db '.'
+.markerX db 'X'
+.markerO db 'O'
+.markerNone db '.'
 
 ;===============================================
 ; int checkWin (int *boardstate);
@@ -144,7 +144,7 @@ checkWin:
 	mov         ecx, 8
 
 .loop:
-	mov         si, [winStates + ecx*2 - 2]
+	mov         si, [.winStates + ecx*2 - 2]
 	mov         dx, si
 	and         dx, di
 	cmp         dx, si
@@ -158,7 +158,7 @@ checkWin:
 	mov         eax, 1
 	ret
 
-winStates dw \
+.winStates dw \
 	0b111000000, 0b000111000, 0b000000111, \
 	0b100100100, 0b010010010, 0b001001001, \
 	0b100010001, 0b001010100
@@ -177,11 +177,11 @@ getUserInput:
 	jmp         .input
 
 .retry:
-	mov         rdi, failmsg
+	mov         rdi, .failmsg
 	call        write_printStr
 
 .input:
-	mov         rdi, prompt
+	mov         rdi, .prompt
 	call        write_printStr
 
 	call        read_getDigit
@@ -199,6 +199,6 @@ getUserInput:
 	pop         rbx
 	ret
 
-prompt db "Enter position [1-9]: ", 0
-failmsg db "Input is not in valid range. ", \
+.prompt db "Enter position [1-9]: ", 0
+.failmsg db "Input is not in valid range. ", \
 	"Please try again.", 10, 0
