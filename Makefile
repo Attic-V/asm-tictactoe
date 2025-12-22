@@ -14,11 +14,11 @@ TARGET := $(BIN_DIR)/$(OUT)
 all: $(TARGET)
 
 $(TARGET): $(BUILD_DIR_OBJS) | $(BIN_DIR)
-	@echo "link $@"
+	@echo "LD $@"
 	@ld -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s | $(BUILD_DIR)
-	@echo "assemble $<"
+	@echo "AS $<"
 	@nasm -f elf64 -o $@ $<
 
 $(BIN_DIR) $(BUILD_DIR):
