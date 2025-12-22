@@ -52,25 +52,34 @@ main:
 	mov         rdi, rbp
 	call        checkWin
 	test        al, 1
-	jnz         .end
+	jnz         .win
 
 	xor         rbp, x_board                    ; swap current board
 	xor         rbp, o_board
 
 	dec         ebx
-	jnz         .turn
+	jz          .draw
+	jmp         .turn
 
-.end:
+.win:
 	mov         rcx, .winmsg_x
 	mov         rdx, .winmsg_o
 
-	mov         rdi, .drawmsg
 	cmp         rbp, x_board
 	cmove       rdi, rcx
 	cmp         rbp, o_board
 	cmove       rdi, rdx
 	call        write_printStr
 
+	jmp         .end
+
+.draw:
+	mov         rdi, .drawmsg
+	call        write_printStr
+
+	jmp         .end
+
+.end:
 	pop         rbx
 	pop         rbp
 	add         rsp, 8
