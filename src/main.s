@@ -1,21 +1,23 @@
 section .data
-	x_board dw 0                            ; bitboard for player x
-	o_board dw 0                            ; bitboard for player o
+	x_board dw 0
+	o_board dw 0
 
 section .text
+	extern read_getDigit
+	extern read_getChar
+
 	extern write_printChar
 	extern write_printSpace
 	extern write_printLf
 	extern write_printStr
-	extern read_getDigit
-	extern read_getChar
-	global _start                           ; expose _start to the linker
+
+	global _start
 
 _start:
-	call    main
+	call        main
 
-	mov     rax, 60                         ; exit
-	mov     rdi, 0                          ; code 0
+	mov         rax, 60
+	mov         rdi, 0
 	syscall
 
 ;===============================================
@@ -42,7 +44,7 @@ main:
 	test        al, 1
 	jnz         .end
 
-	xor         rbp, x_board                        ; swap current board
+	xor         rbp, x_board                    ; swap current board
 	xor         rbp, o_board
 
 	dec         ebx
@@ -66,7 +68,7 @@ main:
 
 winmsg_x db "X wins!", 10, 0
 winmsg_o db "O wins!", 10, 0
-drawmsg db "The game has ended in a draw.", 10, 0
+drawmsg db "Match drawn.", 10, 0
 
 ;===============================================
 ; void placePiece (int *board);
@@ -176,8 +178,7 @@ getUserInput:
 	call        write_printStr
 
 	call        read_getDigit
-	dec         rax
-	mov         rbx, rax
+	lea         rbx, [rax - 1]
 
 	call        read_getChar
 	call        write_printLf
@@ -186,4 +187,4 @@ getUserInput:
 	pop         rbx
 	ret
 
-prompt: db "Enter position [1-9]: ", 0
+prompt db "Enter position [1-9]: ", 0

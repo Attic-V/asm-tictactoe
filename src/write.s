@@ -1,5 +1,6 @@
 section .text
 	extern string_len
+
 	global write_printChar
 	global write_printSpace
 	global write_printLf
