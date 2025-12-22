@@ -80,20 +80,28 @@ place_piece:
 	push        rbx
 
 	mov         rbx, rdi
+	jmp         .input
 
-.loop:
+.retry:
+	mov         rdi, .failmsg
+	call        write_printStr
+
+.input:
 	call        getUserInput
 
 	movzx       ecx, word [x_board]
 	or          cx, [o_board]
 
 	bt          cx, ax
-	jc          .loop
+	jc          .retry
 
 	bts         [rbx], ax
 
 	pop         rbx
 	ret
+
+.failmsg db "Cell is already occupied. ", \
+	"Try again.", 10, 0
 
 ;===============================================
 ; void displayBoard ();
