@@ -1,4 +1,6 @@
-.PHONY: all clean
+ROOT := $(notdir $(abspath $(dir $(lastword $(MAKEFILE_LIST)))))
+
+.PHONY: all clean docker
 
 SRC_DIR := src
 SRC_DIR_SRCS := $(wildcard $(SRC_DIR)/*.s)
@@ -26,3 +28,9 @@ $(BIN_DIR) $(BUILD_DIR):
 
 clean:
 	@$(RM) -r $(BUILD_DIR) $(BIN_DIR)
+
+DOCKER_TAG := $(ROOT)
+
+docker:
+	docker build -t $(DOCKER_TAG) .
+	docker run --rm -it $(DOCKER_TAG)
