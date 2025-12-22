@@ -31,10 +31,20 @@ main:
 
 	mov         ebx, 9
 	mov         rbp, x_board
+	jmp         .turn
+
+.retryinput:
+	mov         rdi, .failmsg
+	call        write_printStr
 
 .turn:
+	call        getUserInput
+
 	mov         rdi, rbp
+	mov         esi, eax
 	call        place_piece
+	cmp         eax, -1
+	je          .retryinput
 
 	call        print_board
 	call        write_printLf
@@ -69,39 +79,29 @@ main:
 .winmsg_x db "X wins!", 10, 0
 .winmsg_o db "O wins!", 10, 0
 .drawmsg db "Match drawn.", 10, 0
+.failmsg db "Cell is already occupied. ", \
+	"Try again.", 10, 0
 
 ;===============================================
-; void placePiece (int *board);
+; int placePiece (int *board, short cell);
 ;-----------------------------------------------
-; Read input from stdin and place a marker in
-; the selected cell of the given board.
+; Place a marker in the given cell of the given
+; board. Return 0 on success and -1 on failure.
 ;===============================================
 place_piece:
-	push        rbx
-
-	mov         rbx, rdi
-	jmp         .input
-
-.retry:
-	mov         rdi, .failmsg
-	call        write_printStr
-
-.input:
-	call        getUserInput
-
 	movzx       ecx, word [x_board]
 	or          cx, [o_board]
 
-	bt          cx, ax
-	jc          .retry
+	bt          cx, si
+	jc          .fail
 
-	bts         [rbx], ax
-
-	pop         rbx
+	bts         [rdi], si
+	mov         eax, 0
 	ret
 
-.failmsg db "Cell is already occupied. ", \
-	"Try again.", 10, 0
+.fail:
+	mov         eax, -1
+	ret
 
 ;===============================================
 ; void displayBoard ();
