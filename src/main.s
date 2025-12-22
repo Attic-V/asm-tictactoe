@@ -1,5 +1,3 @@
-LF equ 10
-
 section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
@@ -66,9 +64,9 @@ main:
 	add         rsp, 8
 	ret
 
-winmsg_x db "X wins!", LF, 0
-winmsg_o db "O wins!", LF, 0
-drawmsg db "The game has ended in a draw.", LF, 0
+winmsg_x db "X wins!", 10, 0
+winmsg_o db "O wins!", 10, 0
+drawmsg db "The game has ended in a draw.", 10, 0
 
 ;===============================================
 ; void placePiece (int *board);
