@@ -4,8 +4,7 @@ SRC_DIR := src
 SRC_DIR_SRCS := $(wildcard $(SRC_DIR)/*.s)
 
 BUILD_DIR := build
-BUILD_DIR_OBJS := \
-	$(patsubst $(SRC_DIR)/%.s,$(BUILD_DIR)/%.o,$(SRC_DIR_SRCS))
+BUILD_DIR_OBJS := $(patsubst $(SRC_DIR)/%.s,$(BUILD_DIR)/%.o,$(SRC_DIR_SRCS))
 
 BIN_DIR := bin
 
@@ -15,14 +14,15 @@ TARGET := $(BIN_DIR)/$(OUT)
 all: $(TARGET)
 
 $(TARGET): $(BUILD_DIR_OBJS) | $(BIN_DIR)
-	ld -o $@ $^
+	@echo "link $@"
+	@ld -o $@ $^
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.s | $(BUILD_DIR)
-	nasm -f elf64 -o $@ $^
+	@echo "assemble $<"
+	@nasm -f elf64 -o $@ $<
 
 $(BIN_DIR) $(BUILD_DIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 clean:
-	$(RM) -r $(BUILD_DIR)
-	$(RM) -r $(BIN_DIR)
+	@$(RM) -r $(BUILD_DIR) $(BIN_DIR)
