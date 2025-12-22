@@ -4,13 +4,6 @@ section .data
 	x_board dw 0                            ; bitboard for player x
 	o_board dw 0                            ; bitboard for player o
 
-section .rodata
-	winmsg_x db "X wins!", LF, 0            ; win message for x
-	winmsg_o db "O wins!", LF, 0            ; win message for o
-
-	drawmsg db "The game has ended ", \
-		"in a draw.", LF, 0             ; draw message
-
 section .text
 	extern write_printChar
 	extern write_printSpace
@@ -27,58 +20,55 @@ _start:
 	mov     rdi, 0                          ; code 0
 	syscall
 
+;===============================================
+; void main ();
+;-----------------------------------------------
+;===============================================
 main:
-	push    rbp
-	mov     rbp, rsp
+	sub         rsp, 8
+	push        rbp
+	push        rbx
 
-	mov     cl, 9                           ; 9 board cells to loop through
+	mov         ebx, 9
+	mov         rbp, x_board
 
-.x:
-	push    rcx                             ; save rcx
-	lea     rdi, [x_board]                  ; pass x board to place_piece
-	call    place_piece                     ; place piece in x board
-	call    print_board                     ; display board
-	call    write_printLf
-	mov     rdi, [x_board]                  ; pass x_board to check_win
-	call    checkWin                        ; checkWin x_board
-	pop     rcx                             ; restore rcx
-	cmp     rax, 1                          ; if x won
-	je      .win_x                          ; then jump .win_x
+.turn:
+	mov         rdi, rbp
+	call        place_piece
 
-	loop    .o                              ; dec cl and jump .o if cl > 0
-	jmp     .draw                           ; else go to .draw
+	call        print_board
+	call        write_printLf
 
-.o:
-	push    rcx                             ; save rcx
-	lea     rdi, [o_board]                  ; pass o board to place_piece
-	call    place_piece                     ; place piece in o board
-	call    print_board                     ; display board
-	call    write_printLf
-	mov     rdi, [o_board]                  ; pass o_board to check_win
-	call    checkWin                        ; checkWin o_board
-	pop     rcx                             ; restore rcx
-	cmp     rax, 1                          ; if o won
-	je      .win_o                          ; then jump .win_o
+	mov         rdi, rbp
+	call        checkWin
+	test        al, 1
+	jnz         .end
 
-	dec     cl                              ; decrement counter
-	jnz     .x                              ; loop .x if cl > 0
-	jmp     .draw                           ; else go to .draw
+	xor         rbp, x_board                        ; swap current board
+	xor         rbp, o_board
 
-.win_x:
-	mov     rdi, winmsg_x                   ; pass to printst
-	jmp     .end
-.win_o:
-	mov     rdi, winmsg_o                   ; pass to printst
-	jmp     .end
-.draw:
-	mov     rdi, drawmsg                    ; pass to printst
-	jmp     .end
+	dec         ebx
+	jnz         .turn
 
 .end:
-	call    write_printStr
+	mov         rcx, winmsg_x
+	mov         rdx, winmsg_o
 
-	leave
+	mov         rdi, drawmsg
+	cmp         rbp, x_board
+	cmove       rdi, rcx
+	cmp         rbp, o_board
+	cmove       rdi, rdx
+	call        write_printStr
+
+	pop         rbx
+	pop         rbp
+	add         rsp, 8
 	ret
+
+winmsg_x db "X wins!", LF, 0
+winmsg_o db "O wins!", LF, 0
+drawmsg db "The game has ended in a draw.", LF, 0
 
 ;===============================================
 ; void placePiece (int *board);
@@ -141,7 +131,7 @@ markerO db 'O'
 markerNone db '.'
 
 ;===============================================
-; int checkWin (int boardstate);
+; int checkWin (int *boardstate);
 ;-----------------------------------------------
 ; Check whether the given boardstate contains a
 ; win condition.
@@ -150,6 +140,7 @@ markerNone db '.'
 ; otherwise.
 ;===============================================
 checkWin:
+	mov         di, [rdi]
 	mov         ecx, 8
 
 .loop:
