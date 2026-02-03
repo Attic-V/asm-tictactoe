@@ -14,29 +14,15 @@ manipulation.
 - **binutils** (for `ld`)
 - A **Linux** environment targeting **x86-64**
 
-## Building (native)
+## Building
 
-To build the project directly on your machine:
+To build the project:
 
 ```
 make
 ```
 
 This will produce an executable called `out` in the `bin` directory.
-
-## Building with Docker
-
-A Dockerfile is provided so that you can build and run the project inside a
-container if you so choose. You would likely do this if either A) you don't want
-to install dependencies locally or B) don't have an x86-64 Linux box available.
-
-Build and run the project in Docker:
-
-```
-make docker
-```
-
-> If your Docker setup requires root privileges, prefix the command with `sudo`.
 
 ## Cleaning
 
