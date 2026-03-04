@@ -12,7 +12,6 @@ manipulation.
 - **NASM**
 - **GNU Make**
 - **binutils** (for `ld`)
-- A **Linux** environment targeting **x86-64**
 
 ## Building
 
